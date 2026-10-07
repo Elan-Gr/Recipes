@@ -104,8 +104,8 @@ blockquote {
     padding: 0 0.4in;
     color: #000;
   }
-  a[href$="index.html"], .searchbox, #noresults {
-    display: none;
+  a[href*="index.html"], .searchbox, #noresults {
+    display: none !important;
   }
   a {
     color: #000;
