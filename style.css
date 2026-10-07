@@ -1,0 +1,41 @@
+/* Elan's recipe collection — plain, readable, mobile-friendly */
+:root { --bg: #fdfcf9; --ink: #2b2b2b; --muted: #6b6b6b; --accent: #8a5a2b;
+        --card: #ffffff; --line: #e8e2d6; --tried: #2e7d32; --untried: #b26a00; }
+* { box-sizing: border-box; }
+body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--ink);
+       line-height: 1.65; margin: 0; padding: 0; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 1.2rem 1.4rem 3rem; }
+header.site { border-bottom: 2px solid var(--line); margin-bottom: 1.5rem; padding-bottom: 0.8rem; }
+header.site a.home { text-decoration: none; color: var(--ink); }
+header.site h1 { font-size: 1.9rem; margin: 0.2rem 0; }
+.crumb { font-size: 0.9rem; color: var(--muted); }
+.crumb a { color: var(--accent); }
+h1.recipe-title { font-size: 1.8rem; margin: 0.3rem 0 0.2rem; }
+h2 { font-size: 1.35rem; margin-top: 1.8rem; border-bottom: 1px solid var(--line); padding-bottom: 0.25rem; }
+h3 { font-size: 1.15rem; margin-top: 1.4rem; }
+.badge { display: inline-block; font-size: 0.78rem; font-family: -apple-system, Helvetica, Arial, sans-serif;
+         font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; vertical-align: middle; }
+.badge.tried { background: #e6f2e7; color: var(--tried); border: 1px solid #bfe0c2; }
+.badge.untried { background: #fdf0dc; color: var(--untried); border: 1px solid #f0d9a8; }
+.untried-tag { background: #fdf0dc; color: var(--untried); border: 1px solid #f0d9a8;
+               border-radius: 4px; padding: 0 0.35rem; font-size: 0.85em; font-weight: 600; }
+ul, ol { padding-left: 1.5rem; }
+li { margin-bottom: 0.35rem; }
+.source { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--line);
+         font-size: 0.9rem; color: var(--muted); }
+footer a { color: var(--accent); }
+/* index */
+.searchbox { width: 100%; font-size: 1.05rem; padding: 0.6rem 0.8rem; margin: 1rem 0 1.5rem;
+             border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+.cat { font-size: 1.4rem; margin: 1.6rem 0 0.5rem; }
+.recipe-list { list-style: none; padding: 0; margin: 0 0 0.5rem; }
+.recipe-list li { margin: 0; border-bottom: 1px solid var(--line); }
+.recipe-list a { display: flex; justify-content: space-between; align-items: center;
+                 padding: 0.55rem 0.2rem; text-decoration: none; color: var(--ink); gap: 0.8rem; }
+.recipe-list a:hover { background: #f7f3ea; }
+.recipe-list .t { flex: 1; }
+.count { color: var(--muted); font-size: 0.95rem; }
+#noresults { display: none; color: var(--muted); padding: 1rem 0; }
+blockquote { border-left: 3px solid var(--line); margin-left: 0; padding-left: 1rem; color: var(--muted); }
+code { background: #f4f1ea; padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.92em; }
