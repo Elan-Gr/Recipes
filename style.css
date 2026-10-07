@@ -95,3 +95,34 @@ blockquote {
   padding-left: 1rem;
   color: #555;
 }
+
+/* printer-friendly */
+@media print {
+  body {
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0.4in;
+    color: #000;
+  }
+  a[href$="index.html"], .searchbox, #noresults {
+    display: none;
+  }
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+  .warning, .untried-tag {
+    background: none;
+    border: 1px solid #888;
+    color: #000;
+  }
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  li {
+    page-break-inside: avoid;
+  }
+  .recipe-list li {
+    border-bottom: none;
+  }
+}
