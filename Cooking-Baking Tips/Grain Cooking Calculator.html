@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="last-updated" content="2026-10-25">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grain Cooking Calculator — Elan's Recipes</title>
+<link rel="stylesheet" href="../style.css">
+<script type="application/json" id="usda-ingredients">[]</script>
+</head>
+<body>
+<h1>Grain Cooking Calculator</h1>
+<p>Pick a grain and a doneness, then tell it how much you are cooking — by servings, by grams, or by cups — and it gives back the grain and the liquid in both volume and mass. Modeled on the KitchenAid rice cooker's programs: grain type plus preferred texture, with the water adjusted to match.</p>
+
+<h2>Calculator</h2>
+<p>
+<label for="grain">Grain:</label>
+<select id="grain">
+<optgroup label="KitchenAid rice cooker programs">
+<option value="white-long">White rice, long grain</option>
+<option value="white-short">White rice, short grain (sushi)</option>
+<option value="brown-long">Brown rice, long grain</option>
+<option value="brown-short">Brown rice, short grain</option>
+<option value="basmati">Basmati rice</option>
+<option value="jasmine">Jasmine rice</option>
+<option value="quinoa">Quinoa</option>
+<option value="barley">Pearled barley</option>
+<option value="farro">Farro</option>
+<option value="steel-cut">Steel cut oats</option>
+<option value="rolled-oats">Rolled oats</option>
+</optgroup>
+<optgroup label="Other grains">
+<option value="wild-rice">Wild rice</option>
+<option value="millet">Millet</option>
+<option value="buckwheat">Buckwheat groats</option>
+<option value="bulgur">Bulgur</option>
+</optgroup>
+</select>
+</p>
+<p>Doneness:
+<label><input type="radio" name="doneness" value="firm"> Firm (separate grains)</label>
+<label><input type="radio" name="doneness" value="standard" checked> Standard</label>
+<label><input type="radio" name="doneness" value="soft"> Soft (stickier / creamier)</label>
+</p>
+<p>
+<label for="mode">I am measuring by:</label>
+<select id="mode">
+<option value="servings">Servings</option>
+<option value="grams">Grams of dry grain</option>
+<option value="cups">Cups of dry grain</option>
+</select>
+<label for="amount">Amount:</label>
+<input type="number" id="amount" min="0" step="any" value="4">
+</p>
+<div id="result">
+<p><strong>Grain:</strong> <span id="out-grain">—</span></p>
+<p><strong>Liquid:</strong> <span id="out-liquid">—</span></p>
+<p><span id="out-detail">—</span></p>
+</div>
+
+<h2>Reference table</h2>
+<p>Water is cups of liquid per 1 cup of dry grain. Times are approximate, absorption method (rice cooker or covered pot).</p>
+<table>
+<tr><th>Grain</th><th>1 cup dry weighs</th><th>Firm</th><th>Standard</th><th>Soft</th><th>Approx. time</th></tr>
+<tr><td>White rice, long grain</td><td>190 g</td><td>1.75</td><td>1.875</td><td>2.0</td><td>50 min</td></tr>
+<tr><td>White rice, short grain (sushi)</td><td>190 g</td><td>1.25</td><td>1.375</td><td>1.5</td><td>45–50 min</td></tr>
+<tr><td>Brown rice, long grain</td><td>190 g</td><td>1.75</td><td>1.875</td><td>2.0</td><td>90 min</td></tr>
+<tr><td>Brown rice, short grain</td><td>190 g</td><td>1.75</td><td>1.875</td><td>2.0</td><td>85 min</td></tr>
+<tr><td>Basmati rice</td><td>190 g</td><td>1.25</td><td>1.5</td><td>1.75</td><td>45 min</td></tr>
+<tr><td>Jasmine rice</td><td>190 g</td><td>1.25</td><td>1.5</td><td>1.75</td><td>45 min</td></tr>
+<tr><td>Quinoa</td><td>172 g</td><td>1.75</td><td>2.0</td><td>2.25</td><td>35 min</td></tr>
+<tr><td>Pearled barley</td><td>216 g</td><td>2.25</td><td>2.5</td><td>2.75</td><td>90 min</td></tr>
+<tr><td>Farro</td><td>208 g</td><td>2.25</td><td>2.5</td><td>2.75</td><td>60 min</td></tr>
+<tr><td>Steel cut oats</td><td>176 g</td><td>3.75</td><td>4.0</td><td>4.25</td><td>70 min</td></tr>
+<tr><td>Rolled oats</td><td>96 g</td><td>1.75</td><td>2.0</td><td>2.25</td><td>30 min</td></tr>
+<tr><td>Wild rice</td><td>185 g</td><td>2.75</td><td>3.0</td><td>3.25</td><td>45–55 min</td></tr>
+<tr><td>Millet</td><td>200 g</td><td>2.25</td><td>2.5</td><td>2.75</td><td>25–35 min</td></tr>
+<tr><td>Buckwheat groats</td><td>170 g</td><td>1.75</td><td>2.0</td><td>2.25</td><td>20 min</td></tr>
+<tr><td>Bulgur</td><td>172 g</td><td>1.75</td><td>2.0</td><td>2.25</td><td>10–12 min</td></tr>
+</table>
+
+<h2>Notes</h2>
+<ul>
+<li>One serving = 1/4 cup of dry grain. The calculator shows how many grams that is for the selected grain.</li>
+<li>1 cup of water = 237 ml = 237 g.</li>
+<li>Firm and Soft shift the Standard ratio by 1/4 cup of water per cup of grain — except the KitchenAid rice types, where Firm and Soft are the ends of the manual's published range and Standard is the midpoint.</li>
+<li>Rinse rice before cooking. Rest grains covered, off the heat, about 10 minutes before fluffing.</li>
+<li>Farro is often boiled like pasta in plenty of water and drained instead; the ratios above are for the covered-pot absorption method.</li>
+<li>Fine bulgur needs less water than medium or coarse; the table is for medium/coarse. Soak it rather than boiling it.</li>
+<li>Cup weights vary by brand and grind, especially for bulgur and buckwheat — weigh the grain when it matters.</li>
+<li>Ratios are starting points. Age, variety, and how much the grain was rinsed all shift absorption; taste near the end and adjust.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>KitchenAid Compact Rice and Grain Cooker manual (KGC3155BM): grain programs, cup weights, and cook times.</li>
+<li>KitchenAid Multi-Cooker manual rice table: water ranges for white, brown, and sushi/short-grain rice.</li>
+<li>Whole Grains Council cooking chart, via the <a href="https://nutritionstudies.org/cooking-power-packed-whole-grains/">Center for Nutrition Studies</a>: standard ratios and times for the other grains.</li>
+<li>Cup weights for wild rice, millet, buckwheat, and bulgur: Traditional Oven, aqua-calc, and the Bob's Red Mill bulgur label.</li>
+</ul>
+
+<p><a href="../index.html">← Back to all recipes</a></p>
+
+<script>
+var GRAINS = {
+  "white-long":  {name: "White rice, long grain",        gPerCup: 190, water: {firm: 1.75,  standard: 1.875, soft: 2.0},  time: "50 min"},
+  "white-short": {name: "White rice, short grain (sushi)", gPerCup: 190, water: {firm: 1.25,  standard: 1.375, soft: 1.5},  time: "45–50 min"},
+  "brown-long":  {name: "Brown rice, long grain",       gPerCup: 190, water: {firm: 1.75,  standard: 1.875, soft: 2.0},  time: "90 min"},
+  "brown-short": {name: "Brown rice, short grain",      gPerCup: 190, water: {firm: 1.75,  standard: 1.875, soft: 2.0},  time: "85 min"},
+  "basmati":     {name: "Basmati rice",                 gPerCup: 190, water: {firm: 1.25,  standard: 1.5,   soft: 1.75}, time: "45 min"},
+  "jasmine":     {name: "Jasmine rice",                 gPerCup: 190, water: {firm: 1.25,  standard: 1.5,   soft: 1.75}, time: "45 min"},
+  "quinoa":      {name: "Quinoa",                       gPerCup: 172, water: {firm: 1.75,  standard: 2.0,   soft: 2.25}, time: "35 min"},
+  "barley":      {name: "Pearled barley",               gPerCup: 216, water: {firm: 2.25,  standard: 2.5,   soft: 2.75}, time: "90 min"},
+  "farro":       {name: "Farro",                        gPerCup: 208, water: {firm: 2.25,  standard: 2.5,   soft: 2.75}, time: "60 min"},
+  "steel-cut":   {name: "Steel cut oats",               gPerCup: 176, water: {firm: 3.75,  standard: 4.0,   soft: 4.25}, time: "70 min"},
+  "rolled-oats": {name: "Rolled oats",                  gPerCup: 96,  water: {firm: 1.75,  standard: 2.0,   soft: 2.25}, time: "30 min"},
+  "wild-rice":   {name: "Wild rice",                    gPerCup: 185, water: {firm: 2.75,  standard: 3.0,   soft: 3.25}, time: "45–55 min"},
+  "millet":      {name: "Millet",                        gPerCup: 200, water: {firm: 2.25,  standard: 2.5,   soft: 2.75}, time: "25–35 min"},
+  "buckwheat":   {name: "Buckwheat groats",             gPerCup: 170, water: {firm: 1.75,  standard: 2.0,   soft: 2.25}, time: "20 min"},
+  "bulgur":      {name: "Bulgur",                       gPerCup: 172, water: {firm: 1.75,  standard: 2.0,   soft: 2.25}, time: "10–12 min"}
+};
+var EIGHTHS = ["", "⅛", "¼", "⅜", "½", "⅝", "¾", "⅞"];
+function fmtCups(x) {
+  var whole = Math.floor(x + 1e-9);
+  var frac = Math.round((x - whole) * 8);
+  if (frac === 8) { whole += 1; frac = 0; }
+  if (frac === 0) return String(whole);
+  if (whole === 0) return EIGHTHS[frac];
+  return whole + EIGHTHS[frac];
+}
+function fmtNum(x) { return String(Math.round(x)); }
+function update() {
+  var g = GRAINS[document.getElementById("grain").value];
+  var doneness = document.querySelector('input[name="doneness"]:checked').value;
+  var mode = document.getElementById("mode").value;
+  var amt = parseFloat(document.getElementById("amount").value);
+  var outGrain = document.getElementById("out-grain");
+  var outLiquid = document.getElementById("out-liquid");
+  var outDetail = document.getElementById("out-detail");
+  if (isNaN(amt) || amt <= 0) {
+    outGrain.textContent = "—";
+    outLiquid.textContent = "—";
+    outDetail.textContent = "Enter an amount above.";
+    return;
+  }
+  var cupsDry;
+  if (mode === "servings") cupsDry = amt * 0.25;
+  else if (mode === "grams") cupsDry = amt / g.gPerCup;
+  else cupsDry = amt;
+  var grainGrams = cupsDry * g.gPerCup;
+  var ratio = g.water[doneness];
+  var waterCups = cupsDry * ratio;
+  var waterMl = Math.round(waterCups * 237 / 5) * 5;
+  var grainUnit = cupsDry <= 1 ? "cup" : "cups";
+  var waterUnit = waterCups <= 1 ? "cup" : "cups";
+  outGrain.textContent = fmtCups(cupsDry) + " " + grainUnit + " (" + fmtNum(grainGrams) + " g) of " + g.name.toLowerCase();
+  outLiquid.textContent = fmtCups(waterCups) + " " + waterUnit + " (" + fmtNum(waterMl) + " ml, " + fmtNum(waterMl) + " g) of water";
+  outDetail.textContent = "Ratio 1 : " + ratio + " (grain : water, by volume). About " + g.time + ". One serving = 1/4 cup dry (" + fmtNum(g.gPerCup / 4) + " g of this grain).";
+}
+["grain", "mode", "amount"].forEach(function(id) {
+  document.getElementById(id).addEventListener("input", update);
+  document.getElementById(id).addEventListener("change", update);
+});
+document.querySelectorAll('input[name="doneness"]').forEach(function(el) {
+  el.addEventListener("change", update);
+});
+update();
+</script>
+</body>
+</html>
