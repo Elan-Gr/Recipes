@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="last-updated" content="2026-11-06">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pork Butt Smoking Planner — Elan's Recipes</title>
+<link rel="stylesheet" href="../style.css">
+<script type="application/json" id="usda-ingredients">[]</script>
+</head>
+<body>
+<h1>Pork Butt Smoking Planner</h1>
+<p>Pulled pork without the guesswork. Pork butt is the most forgiving cut on the smoker — a big collagen-rich shoulder that wants a long, slow cook to probe-tender. This planner covers the stall, the wrap decision, and the blade-bone test, then hands you to the main calculator to plan the cook to the minute. Modeled on the pork butt planner at <a href="https://meatsmokingcalculator.com/meats/pork-butt-smoking-calculator/">MeatSmokingCalculator.com</a>.</p>
+<p><a href="Meat%20Smoking%20Calculator.html?cut=pork-butt">Now plan a pork butt cook to the minute →</a></p>
+
+<h2>Pork butt at a glance</h2>
+<ul>
+<li><strong>Pit temps:</strong> 225°F / 250°F / 275°F</li>
+<li><strong>Time rule of thumb:</strong> ~1.75 hr/lb at 225°F · ~1.5 hr/lb at 250°F · ~1.25 hr/lb at 275°F</li>
+<li><strong>Pull temp:</strong> 203°F (200 to 205°F range)</li>
+<li><strong>Rest:</strong> 45 min</li>
+<li><strong>Best woods:</strong> Hickory, apple, cherry, pecan</li>
+</ul>
+
+<h2>How long to smoke a pork butt</h2>
+<table>
+<tr><th>Weight</th><th>225°F</th><th>250°F</th><th>275°F</th></tr>
+<tr><td>6 lb</td><td>~10 hr 30 min</td><td>~9 hr</td><td>~7 hr 30 min</td></tr>
+<tr><td>8 lb</td><td>~14 hr</td><td>~12 hr</td><td>~10 hr</td></tr>
+<tr><td>10 lb</td><td>~17 hr 30 min</td><td>~15 hr</td><td>~12 hr 30 min</td></tr>
+</table>
+
+<h2>The blade-bone test</h2>
+<p>The thermometer says 203°F; the bone confirms it. On a bone-in butt, grab the blade bone and give it a twist — when the pork is done, the bone pulls clean with almost no resistance. If it holds on, the meat is not ready yet, whatever the thermometer says. Boneless butts cook a little faster and slice easier, but you lose the test and the bone's flavor.</p>
+
+<h2>The stall: wrap, or push through?</h2>
+<p>Somewhere between 150–165°F internal, the butt will park for hours — evaporative cooling, not a broken thermometer. Push through it for maximum bark, or wrap when the bark is set: foil braises and goes faster, butcher paper breathes and keeps bark better. Either way, the cook ends when it probes like warm butter, around 203°F.</p>
+
+<h2>How much pork butt do I need?</h2>
+<p>Enter your headcount — the planner works backward through trim and cook loss to the raw weight to buy.</p>
+<p>
+<label for="guests">Guests:</label>
+<input type="number" id="guests" min="0" step="1" value="10" style="width:4em">
+<label for="appetite">Appetite:</label>
+<select id="appetite">
+<option value="0.33">Light / lots of sides</option>
+<option value="0.44" selected>Average</option>
+<option value="0.57">Hearty / meat's the star</option>
+</select>
+<label for="leftovers">Leftovers:</label>
+<select id="leftovers">
+<option value="1" selected>None</option>
+<option value="1.25">Some (+25%)</option>
+<option value="1.5">Lots (+50%)</option>
+</select>
+</p>
+<p>
+<label for="trim-loss">Trim loss (% of raw):</label>
+<input type="number" id="trim-loss" min="0" max="50" step="any" value="15" style="width:4em">
+<label for="cook-loss">Cook loss (% of trimmed):</label>
+<input type="number" id="cook-loss" min="0" max="60" step="any" value="35" style="width:4em">
+</p>
+<div id="serving-result">
+<p><strong>Buy about:</strong> <span id="out-buy">—</span></p>
+<p><span id="out-yield">—</span></p>
+<p><span id="out-losses">—</span></p>
+</div>
+<p>Pulled pork goes fast and there's no margin if people go back for seconds, so this errs on a little extra — drop to Light if you're serving heavy sides or other meats.</p>
+
+<h2>Notes</h2>
+<ul>
+<li>Done is when it probes like warm butter and the blade bone twists free — usually around 203°F. Tenderness decides, not the number.</li>
+<li>Rest at least 45 minutes before pulling; wrapped in towels in a dry cooler it holds for hours and gets better.</li>
+<li>Got trimmed fat? Don't toss it — render it into lard, a clean cooking fat for frying and baking.</li>
+<li>Fat side up or down: whichever faces your heat source. Protect the meat, not tradition.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>Pork butt smoking planner and time/temperature tables: <a href="https://meatsmokingcalculator.com/meats/pork-butt-smoking-calculator/">MeatSmokingCalculator.com</a> (rates, pull temperature, and serving math as published there, October 2026).</li>
+</ul>
+
+<p><a href="../index.html">← Back to all recipes</a></p>
+
+<script>
+function fmtLbOz(lb) {
+  var whole = Math.floor(lb + 1e-9);
+  var oz = Math.round((lb - whole) * 16);
+  if (oz === 16) { whole += 1; oz = 0; }
+  return oz ? whole + " lb " + oz + " oz" : whole + " lb";
+}
+function updateServing() {
+  var guests = parseFloat(document.getElementById("guests").value) || 0;
+  var perPerson = parseFloat(document.getElementById("appetite").value);
+  var leftoverMult = parseFloat(document.getElementById("leftovers").value);
+  var trimLoss = (parseFloat(document.getElementById("trim-loss").value) || 0) / 100;
+  var cookLoss = (parseFloat(document.getElementById("cook-loss").value) || 0) / 100;
+  var buy = document.getElementById("out-buy");
+  var yld = document.getElementById("out-yield");
+  var losses = document.getElementById("out-losses");
+  if (guests <= 0) {
+    buy.textContent = "—";
+    yld.textContent = "";
+    losses.textContent = "";
+    return;
+  }
+  var cooked = guests * perPerson * leftoverMult;
+  var trimmed = cooked / (1 - cookLoss);
+  var raw = trimmed / (1 - trimLoss);
+  buy.textContent = fmtLbOz(raw) + " (" + raw.toFixed(1) + " lb raw)";
+  yld.textContent = "After trimming: " + fmtLbOz(trimmed) + " · on the plate cooked: " + fmtLbOz(cooked) + ".";
+  losses.textContent = "Lost to trim: " + fmtLbOz(raw - trimmed) + " · lost to the cook: " + fmtLbOz(trimmed - cooked) + ".";
+}
+["guests", "appetite", "leftovers", "trim-loss", "cook-loss"].forEach(function(id) {
+  document.getElementById(id).addEventListener("input", updateServing);
+  document.getElementById(id).addEventListener("change", updateServing);
+});
+updateServing();
+</script>
+</body>
+</html>
