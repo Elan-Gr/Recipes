@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="last-updated" content="2026-11-06">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brisket Smoking Planner — Elan's Recipes</title>
+<link rel="stylesheet" href="../style.css">
+<script type="application/json" id="usda-ingredients">[]</script>
+</head>
+<body>
+<h1>Brisket Smoking Planner</h1>
+<p>Brisket is the cook that punishes bad math. Fourteen pounds, a stall that laughs at your schedule, and hungry people at six. This planner covers the stall, the wrap, and the long rest — then hands you to the main calculator to plan the cook to the minute. Modeled on the brisket planner at <a href="https://meatsmokingcalculator.com/meats/brisket-smoking-calculator/">MeatSmokingCalculator.com</a>.</p>
+<p><a href="Meat%20Smoking%20Calculator.html?cut=brisket-packer">Now plan a brisket cook to the minute →</a></p>
+
+<h2>Brisket at a glance</h2>
+<ul>
+<li><strong>Pit temps:</strong> Slow and Low 225°F / 107°C · Hot and Fast 300°F / 149°C</li>
+<li><strong>Time rule of thumb:</strong> Sliced (Slow and Low): ~75 min/lb · Sliced (Hot and Fast): ~35 min/lb · Pulled / Chopped (Slow and Low): ~82 min/lb</li>
+<li><strong>Rest:</strong> 3 hr recommended</li>
+<li><strong>Best woods:</strong> Oak, Hickory, Pecan, Mesquite</li>
+</ul>
+
+<h2>Sliced, pulled, or burnt ends?</h2>
+<p><strong>Sliced</strong> is competition style — firm slices with a clean bite, pulled at ~190°F. <strong>Pulled/chopped</strong> goes further (~200°F) for sandwiches. <strong>Burnt ends</strong> take the point to pulled territory, then cube, sauce, and go back in the pit to candy up.</p>
+
+<h2>How long to smoke a brisket per pound</h2>
+<p>Slow and low at 225°F: about 75 minutes per pound for sliced (up to 13 lb; big packers run ~71 min/lb above that) and ~82 minutes per pound for pulled. Hot &amp; fast at 300°F roughly halves it (~35–40 min/lb). The probe outranks the clock: sliced pulls around 190°F, pulled around 200°F, and either should slide like butter.</p>
+<table>
+<tr><th>Brisket</th><th>Sliced, 225°F</th><th>Pulled, 225°F</th><th>Sliced, Hot &amp; Fast 300°F</th></tr>
+<tr><td>8 lb</td><td>~10 hr</td><td>~11 hr</td><td>~4 hr 40 min</td></tr>
+<tr><td>10 lb</td><td>~12 hr 30 min</td><td>~13 hr 40 min</td><td>~5 hr 50 min</td></tr>
+<tr><td>12 lb</td><td>~15 hr</td><td>~16 hr 25 min</td><td>~7 hr</td></tr>
+<tr><td>14 lb</td><td>~16 hr 35 min</td><td>~17 hr 15 min</td><td>~8 hr 10 min</td></tr>
+<tr><td>16 lb</td><td>~19 hr</td><td>~19 hr 45 min</td><td>~9 hr 20 min</td></tr>
+</table>
+
+<h2>Pull temperatures</h2>
+<table>
+<tr><th>Style</th><th>Pull temp</th><th>Min/lb slow (225°F)</th><th>Min/lb hot (300°F)</th></tr>
+<tr><td>Sliced</td><td>190°F</td><td>75 (71 above 13 lb)</td><td>35</td></tr>
+<tr><td>Pulled / Chopped</td><td>200°F</td><td>82</td><td>40</td></tr>
+<tr><td>Flat Only</td><td>203°F</td><td>75</td><td>35</td></tr>
+<tr><td>Point Only</td><td>205°F</td><td>82</td><td>40</td></tr>
+<tr><td>Point &amp; Flat (Split)</td><td>205°F</td><td>75</td><td>35</td></tr>
+<tr><td>Burnt Ends (Point)</td><td>203°F</td><td>82 + ~1.5 hr finish</td><td>40 + ~1.5 hr finish</td></tr>
+</table>
+
+<h2>The stall, and when to wrap</h2>
+<p>Somewhere between 145–165°F internal, your brisket will park for hours. That's evaporative cooling, not a broken thermometer. On a big cook the stall can run hours 4–9 of the cook. Push through it for maximum bark, or wrap — foil braises and goes faster, butcher/peach paper breathes and keeps bark better. Wrap when the bark is set: dry-looking, doesn't smear when touched. The stall chart marks 165°F as the wrap point if you are wrapping, and 203°F as the point where the probe slides like butter.</p>
+
+<h2>How much brisket do I need?</h2>
+<p>Enter your headcount — the planner works backward through trim and cook loss to the raw weight to buy.</p>
+<p>
+<label for="guests">Guests:</label>
+<input type="number" id="guests" min="0" step="1" value="10" style="width:4em">
+<label for="appetite">Appetite:</label>
+<select id="appetite">
+<option value="0.375">Light / lots of sides</option>
+<option value="0.5" selected>Average</option>
+<option value="0.65">Hearty / meat's the star</option>
+</select>
+<label for="leftovers">Leftovers:</label>
+<select id="leftovers">
+<option value="1" selected>None</option>
+<option value="1.25">Some (+25%)</option>
+<option value="1.5">Lots (+50%)</option>
+</select>
+</p>
+<p>
+<label for="trim-loss">Trim loss (% of raw):</label>
+<input type="number" id="trim-loss" min="0" max="50" step="any" value="15" style="width:4em">
+<label for="cook-loss">Cook loss (% of trimmed):</label>
+<input type="number" id="cook-loss" min="0" max="60" step="any" value="35" style="width:4em">
+</p>
+<div id="serving-result">
+<p><strong>Buy about:</strong> <span id="out-buy">—</span></p>
+<p><span id="out-yield">—</span></p>
+<p><span id="out-losses">—</span></p>
+</div>
+<p>A whole packer loses 10–20% up front trimming the hard fat cap, deckle, and silverskin, then renders off another 30–40% of that trimmed weight in fat and moisture during the smoke — roughly 50–55% total yield from raw to sliced. Plan on about 1/2 lb of cooked brisket per person, which is close to 1 lb of raw packer once trim and cook loss are figured in. Brisket goes fast and there's no margin if people go back for seconds, so this errs on a little extra — drop to Light if you're serving heavy sides or other meats.</p>
+
+<h3>How much brisket per person (serving size chart)</h3>
+<p>Raw weight to comfortably feed the top of each range at an average appetite (~0.5 lb cooked per person), no leftovers.</p>
+<table>
+<tr><th>Guests</th><th>Raw brisket to buy</th><th>Trimmed (on the smoker)</th><th>Cooked (served)</th><th>Good pick</th></tr>
+<tr><td>1–5</td><td>4.5 lb</td><td>3.8 lb</td><td>2.5 lb</td><td>a 4.5 lb cut</td></tr>
+<tr><td>6–10</td><td>9.0 lb</td><td>7.7 lb</td><td>5.0 lb</td><td>one whole brisket</td></tr>
+<tr><td>11–15</td><td>14 lb</td><td>12 lb</td><td>7.5 lb</td><td>one whole brisket</td></tr>
+<tr><td>16–20</td><td>18 lb</td><td>15 lb</td><td>10 lb</td><td>2 whole briskets</td></tr>
+<tr><td>21–30</td><td>27 lb</td><td>23 lb</td><td>15 lb</td><td>2 whole briskets</td></tr>
+<tr><td>31–40</td><td>36 lb</td><td>31 lb</td><td>20 lb</td><td>3 whole briskets</td></tr>
+<tr><td>41–50</td><td>45 lb</td><td>38 lb</td><td>25 lb</td><td>3 whole briskets</td></tr>
+</table>
+
+<h2>Which form is the better deal?</h2>
+<p>Same cook, different buys — cheaper per pound usually means more knife work. A whole packer loses 10–20% to trimming but costs less per pound; a trimmed flat costs more per pound but you skip the trimming and the deckle. If you buy the packer, don't toss the trim — render it into beef tallow, gold for cooking, seasoning cast iron, candles, even skincare.</p>
+
+<h2>Notes</h2>
+<ul>
+<li>Done is when it probes like warm butter — usually 190°F sliced, 200°F+ pulled. Tenderness decides, not the number.</li>
+<li>Rest at least an hour; wrapped in towels in a dry cooler it holds 4+ hours and gets better.</li>
+<li>Fat side up or down: whichever faces your heat source. Protect the meat, not tradition.</li>
+<li>Counter rest before the cook takes about 15 min off the cook time for a 45-minute rest — a warmer start cooks faster. Shorter rests take off proportionally less.</li>
+<li>Got trimmed fat? Don't toss it — render it into beef tallow.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>Brisket smoking planner and time/temperature tables: <a href="https://meatsmokingcalculator.com/meats/brisket-smoking-calculator/">MeatSmokingCalculator.com</a> (rates, pull temperatures, and serving math as published there, October 2026).</li>
+</ul>
+
+<p><a href="../index.html">← Back to all recipes</a></p>
+
+<script>
+function fmtDur(min) {
+  min = Math.round(min);
+  if (min < 60) return min + " min";
+  var h = Math.floor(min / 60), m = min % 60;
+  return m ? h + " hr " + m + " min" : h + " hr";
+}
+function fmtLbOz(lb) {
+  var whole = Math.floor(lb + 1e-9);
+  var oz = Math.round((lb - whole) * 16);
+  if (oz === 16) { whole += 1; oz = 0; }
+  return oz ? whole + " lb " + oz + " oz" : whole + " lb";
+}
+function updateServing() {
+  var guests = parseFloat(document.getElementById("guests").value) || 0;
+  var perPerson = parseFloat(document.getElementById("appetite").value);
+  var leftoverMult = parseFloat(document.getElementById("leftovers").value);
+  var trimLoss = (parseFloat(document.getElementById("trim-loss").value) || 0) / 100;
+  var cookLoss = (parseFloat(document.getElementById("cook-loss").value) || 0) / 100;
+  var buy = document.getElementById("out-buy");
+  var yld = document.getElementById("out-yield");
+  var losses = document.getElementById("out-losses");
+  if (guests <= 0) {
+    buy.textContent = "—";
+    yld.textContent = "";
+    losses.textContent = "";
+    return;
+  }
+  var cooked = guests * perPerson * leftoverMult;
+  var trimmed = cooked / (1 - cookLoss);
+  var raw = trimmed / (1 - trimLoss);
+  buy.textContent = fmtLbOz(raw) + " packer (" + raw.toFixed(1) + " lb raw)";
+  yld.textContent = "After trimming: " + fmtLbOz(trimmed) + " · on the plate cooked: " + fmtLbOz(cooked) + ".";
+  losses.textContent = "Lost to trim: " + fmtLbOz(raw - trimmed) + " · lost to the cook: " + fmtLbOz(trimmed - cooked) + ".";
+}
+["guests", "appetite", "leftovers", "trim-loss", "cook-loss"].forEach(function(id) {
+  document.getElementById(id).addEventListener("input", updateServing);
+  document.getElementById(id).addEventListener("change", updateServing);
+});
+updateServing();
+</script>
+</body>
+</html>
