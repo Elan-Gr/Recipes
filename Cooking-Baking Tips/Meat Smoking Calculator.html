@@ -9,8 +9,9 @@
 <script type="application/json" id="usda-ingredients">[]</script>
 </head>
 <body>
-<h1>Meat Smoking Calculator</h1>
-<p>Pick a cut and a pit temperature, set your serving time, and it plans the cook backward — prep, smoke, rest, and a buffer — so the meat is ready when you are. Times are planning estimates from the master smoking chart, not promises; real cooks vary by 25 percent or more, and the probe is the only instrument that knows whether your piece of meat is done. Per-pound cuts scale with weight; per-rack cuts do not — a second rack on the same grate takes the same time as one. Modeled on the cook-time calculator and master chart at <a href="https://smokercalc.com/reference/smoking-time-and-temp-chart/">SmokerCalc.com</a> (the same data file behind <a href="https://meatsmokingcalculator.com/meats/brisket-smoking-calculator/">MeatSmokingCalculator.com</a>).</p>
+<h1>Meat Smoking Times and Temps: Plan Backward From Dinner</h1>
+<p><strong>Stop guessing when dinner's ready — every cut, every method, all planned backward from your table time.</strong></p>
+<p>Quickly create an instant, personalized step-by-step plan for perfectly smoked meats. Pick your meat, how you want it, and when you want to eat. The calculator handles the math: every prep step, the stall, the wrap, the rest, scheduled backward from dinner. Cook times are planning estimates — always verify doneness with a thermometer. Modeled on the cook-time calculator and master chart at <a href="https://smokercalc.com/reference/smoking-time-and-temp-chart/">SmokerCalc.com</a> (the same data file behind <a href="https://meatsmokingcalculator.com/">MeatSmokingCalculator.com</a>).</p>
 
 <h2>Plan your cook</h2>
 <p>
@@ -116,6 +117,28 @@
 <p id="out-facts">—</p>
 <ol id="out-timeline"></ol>
 </div>
+
+<h2>Which planner should I use for brisket, pork butt, ribs, or turkey?</h2>
+<p>The calculator above will plan a timeline for any cut, but the four big cuts each have a dedicated planner tuned to how that cut actually behaves on the pit:</p>
+<ul>
+<li><strong><a href="Turkey%20Smoking%20Planner.html">Turkey Planner</a></strong> — for holiday birds, planned to the minute: brine guidance, whole vs spatchcocked, and a day-before checklist.</li>
+<li><strong><a href="Brisket%20Smoking%20Planner.html">Brisket Planner</a></strong> — for the stall, the wrap, and the long rest: sliced vs pulled vs burnt ends, and the serving calculator.</li>
+<li><strong><a href="Pork%20Butt%20Smoking%20Planner.html">Pork Butt Planner</a></strong> — for pulled pork without the guesswork: the blade-bone test and wrap-or-push-through guidance.</li>
+<li><strong><a href="Ribs%20Smoking%20Planner.html">Ribs Planner</a></strong> — for 3-2-1, competition bite, or fall-off-the-bone: method timing, the bend test, and sauce timing.</li>
+</ul>
+<p>If your cut is not one of those four, start with the calculator above and pick from the full list.</p>
+
+<h2>Things to Smoke</h2>
+<p>Every cut the calculator plans, grouped. Pick one to plan that cook.</p>
+<div id="things-to-smoke"></div>
+
+<h2>FAQ</h2>
+<p><strong>How does the calculator figure out my times?</strong><br>
+Most cook-time tools work forward: you give them a weight and they tell you how long the meat will take. This one works backward. You tell it when you want to eat, and it works back from your serving time through every step: prep steps like trimming and rubs, the cook itself based on your meat and weight, the stall and the wrap, and the rest before you slice or pull. The result is a complete schedule, so the only thing you have to remember is to light the fire on time.</p>
+<p><strong>Are smoking times and temps exact, or just estimates?</strong><br>
+They are planning estimates. Every pit runs a little differently, every piece of meat is a little different, and the stall never shows up at exactly the same minute twice. Always verify doneness with a thermometer rather than trusting the clock alone. What the calculator buys you is a realistic start time and a schedule with enough slack built in that you are not scrambling. Plan with the tool, finish with the thermometer.</p>
+<p><strong>Which cuts are timed per pound and which are timed per rack?</strong><br>
+24 of the 47 cuts in the chart scale with weight. The other 23 do not, and treating them as though they do is one of the most common planning mistakes in barbecue. A rack of spare ribs takes about 5 hours at 250°F whether it weighs 2.5 lb or 4 lb, and three racks in a rib rack take the same time as one. The controlling dimension is the thickness of the meat between the bones, and that barely changes.</p>
 
 <h2>Master smoking chart</h2>
 <p>Per-pound cuts scale with weight; per-rack cuts do not. Pull temperature is a texture target and is separate from the USDA safe minimum.</p>
@@ -369,11 +392,45 @@ function update() {
     });
     sel.appendChild(og);
   });
-  sel.value = "brisket-packer";
+  var preset = null;
+  try { preset = new URLSearchParams(location.search).get("cut"); } catch (e) { preset = null; }
+  var presetOk = false;
+  if (preset) {
+    for (var pi = 0; pi < CUTS.length; pi++) if (CUTS[pi].id === preset) { presetOk = true; break; }
+  }
+  sel.value = presetOk ? preset : "brisket-packer";
   var d = new Date();
   d.setDate(d.getDate() + 1);
   document.getElementById("eat-date").value =
     d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+})();
+// Things to Smoke directory, grouped, linking back to the calculator preset to each cut.
+(function() {
+  var host = document.getElementById("things-to-smoke");
+  if (!host) return;
+  var groups = {};
+  var order = ["Beef", "Pork", "Poultry", "Fish", "Lamb", "Other"];
+  CUTS.forEach(function(c) {
+    if (!groups[c.group]) groups[c.group] = [];
+    groups[c.group].push(c);
+  });
+  order.forEach(function(g) {
+    if (!groups[g]) return;
+    var h = document.createElement("h3");
+    h.textContent = g;
+    host.appendChild(h);
+    var ul = document.createElement("ul");
+    groups[g].forEach(function(c) {
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = "Meat%20Smoking%20Calculator.html?cut=" + encodeURIComponent(c.id);
+      a.textContent = c.name;
+      li.appendChild(a);
+      li.appendChild(document.createTextNode(" — pull " + c.pull + "°F, " + c.typical + "."));
+      ul.appendChild(li);
+    });
+    host.appendChild(ul);
+  });
 })();
 ["cut"].forEach(function(id) {
   document.getElementById(id).addEventListener("change", onCutChange);
