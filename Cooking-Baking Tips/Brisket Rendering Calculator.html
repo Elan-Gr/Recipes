@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="last-updated" content="2026-11-06">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brisket Rendering Calculator — Elan's Recipes</title>
+<link rel="stylesheet" href="../style.css">
+<script type="application/json" id="usda-ingredients">[]</script>
+<style>
+
+  #brisket-calculator {
+    width: 100%;
+    padding: 40px 20px;
+  }
+
+  #brisket-calculator .brisket-calculator__inner {
+    max-width: 850px;
+    margin: 0 auto;
+  }
+
+  #brisket-calculator .brisket-calculator__header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  #brisket-calculator .brisket-calculator__header h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 5vw, 44px);
+  }
+
+  #brisket-calculator .brisket-calculator__description {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  #brisket-calculator .brisket-calculator__section {
+    margin-top: 35px;
+  }
+
+  #brisket-calculator .brisket-calculator__section h3 {
+    font-size: 28px;
+    margin: 0 0 5px;
+  }
+
+  #brisket-calculator .brisket-calculator__help {
+    margin: 0 0 15px;
+    opacity: 0.75;
+    font-size: 14px;
+  }
+
+  #brisket-calculator .brisket-calculator__hold {
+    margin-top: 50px;
+  }
+
+  #brisket-calculator .brisket-calculator__table {
+    border: 1px solid rgba(0,0,0,0.14);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  #brisket-calculator .brisket-calculator__row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.2fr;
+    gap: 18px;
+    align-items: center;
+    min-height: 64px;
+    padding: 10px 18px;
+    border-bottom: 1px solid rgba(0,0,0,0.09);
+  }
+
+  #brisket-calculator .brisket-calculator__row:last-child {
+    border-bottom: 0;
+  }
+
+  #brisket-calculator .brisket-calculator__row--header {
+    min-height: 48px;
+    font-weight: 700;
+    background: rgba(0,0,0,0.05);
+  }
+
+  #brisket-calculator .brisket-calculator__temp {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  #brisket-calculator .brisket-calculator__hours {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 10px;
+    font-size: 17px;
+    border: 1px solid rgba(0,0,0,0.28);
+    border-radius: 7px;
+    background: #fff;
+    color: #111;
+  }
+
+  #brisket-calculator .brisket-calculator__exact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  #brisket-calculator .brisket-calculator__exact-input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  #brisket-calculator .brisket-calculator__results {
+    margin-top: 50px;
+    border: 1px solid rgba(0,0,0,0.14);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  #brisket-calculator .brisket-calculator__result-small {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    font-size: 17px;
+  }
+
+  #brisket-calculator .brisket-calculator__result-small strong {
+    font-size: 22px;
+  }
+
+  #brisket-calculator .brisket-calculator__result-total {
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  #brisket-calculator .brisket-calculator__result-total span {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  #brisket-calculator .brisket-calculator__result-total strong {
+    display: block;
+    margin-top: 5px;
+    font-size: clamp(48px, 8vw, 70px);
+    line-height: 1.1;
+  }
+
+  #brisket-calculator .brisket-calculator__progress {
+    width: 100%;
+    max-width: 550px;
+    height: 12px;
+    margin: 20px auto 0;
+    border-radius: 100px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.1);
+  }
+
+  #brisket-calculator .brisket-calculator__progress-bar {
+    width: 0%;
+    height: 100%;
+    background: currentColor;
+    transition: width 0.25s ease;
+  }
+
+  #brisket-calculator .brisket-calculator__reset {
+    display: block;
+    margin: 25px auto 0;
+    padding: 12px 22px;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 7px;
+  }
+
+  #brisket-calculator .brisket-calculator__disclaimer {
+    max-width: 700px;
+    margin: 25px auto 0;
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+
+  @media screen and (max-width: 600px) {
+
+    #brisket-calculator {
+      padding: 25px 10px;
+    }
+
+    #brisket-calculator .brisket-calculator__row {
+      grid-template-columns: 1.3fr 0.8fr 1.1fr;
+      gap: 8px;
+      padding: 9px 10px;
+    }
+
+    #brisket-calculator .brisket-calculator__temp {
+      font-size: 14px;
+    }
+
+    #brisket-calculator .brisket-calculator__row--header {
+      font-size: 12px;
+    }
+
+    #brisket-calculator .brisket-calculator__hours {
+      font-size: 16px;
+      padding: 6px;
+    }
+
+    #brisket-calculator .brisket-calculator__exact {
+      font-size: 13px;
+      gap: 5px;
+    }
+
+    #brisket-calculator .brisket-calculator__exact-input {
+      width: 18px;
+      height: 18px;
+    }
+
+  }
+
+</style>
+</head>
+<body>
+<div id="brisket-calculator" class="brisket-calculator">
+  <div class="brisket-calculator__inner">
+
+    <header class="brisket-calculator__header">
+      <h1>Brisket Rendering Calculator</h1>
+
+      
+        <div class="brisket-calculator__description">
+          <p>Estimate brisket rendering based on the time spent at different internal temperatures during the cook and hold.</p>
+        </div>
+      
+    </header>
+
+
+    <!-- ============================= -->
+    <!-- COOK -->
+    <!-- ============================= -->
+
+    <section class="brisket-calculator__section">
+
+      <h3>Cook</h3>
+
+      <p class="brisket-calculator__help">
+        Enter the number of hours spent in each internal-temperature range.
+        Decimals are allowed — for example, 0.5 = 30 minutes.
+      </p>
+
+      <div class="brisket-calculator__table">
+
+        <div class="brisket-calculator__row brisket-calculator__row--header">
+          <div>Temperature</div>
+          <div>Hours</div>
+          <div>Exact Temp</div>
+        </div>
+
+        <!-- 140 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="140" data-end="149">
+          <div class="brisket-calculator__temp">
+            140–149°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 140 to 149 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>140°F</span>
+          </label>
+        </div>
+
+
+        <!-- 150 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="150" data-end="159">
+          <div class="brisket-calculator__temp">
+            150–159°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 150 to 159 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>150°F</span>
+          </label>
+        </div>
+
+
+        <!-- 160 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="160" data-end="169">
+          <div class="brisket-calculator__temp">
+            160–169°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 160 to 169 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>160°F</span>
+          </label>
+        </div>
+
+
+        <!-- 170 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="170" data-end="179">
+          <div class="brisket-calculator__temp">
+            170–179°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 170 to 179 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>170°F</span>
+          </label>
+        </div>
+
+
+        <!-- 180 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="180" data-end="189">
+          <div class="brisket-calculator__temp">
+            180–189°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 180 to 189 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>180°F</span>
+          </label>
+        </div>
+
+
+        <!-- 190 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="190" data-end="194">
+          <div class="brisket-calculator__temp">
+            190–194°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 190 to 194 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>190°F</span>
+          </label>
+        </div>
+
+
+        <!-- 195 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="195" data-end="199">
+          <div class="brisket-calculator__temp">
+            195–199°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 195 to 199 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>195°F</span>
+          </label>
+        </div>
+
+
+        <!-- 200 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="200" data-end="204">
+          <div class="brisket-calculator__temp">
+            200–204°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 200 to 204 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>200°F</span>
+          </label>
+        </div>
+
+
+        <!-- 205 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="205" data-end="209">
+          <div class="brisket-calculator__temp">
+            205–209°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 205 to 209 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>205°F</span>
+          </label>
+        </div>
+
+
+        <!-- 210 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="cook" data-start="210" data-end="210">
+          <div class="brisket-calculator__temp">
+            210°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Cook hours at 210 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input" checked="" disabled="">
+            <span>210°F</span>
+          </label>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ============================= -->
+    <!-- HOLD -->
+    <!-- ============================= -->
+
+    <section class="brisket-calculator__section brisket-calculator__hold">
+
+      <h3>Hold</h3>
+
+      <p class="brisket-calculator__help">
+        Enter the number of hours the brisket spent in each internal-temperature
+        range during the hold.
+      </p>
+
+      <div class="brisket-calculator__table">
+
+        <div class="brisket-calculator__row brisket-calculator__row--header">
+          <div>Temperature</div>
+          <div>Hours</div>
+          <div>Exact Temp</div>
+        </div>
+
+
+        <!-- 140 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="140" data-end="149">
+          <div class="brisket-calculator__temp">
+            140–149°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 140 to 149 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>140°F</span>
+          </label>
+        </div>
+
+
+        <!-- 150 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="150" data-end="159">
+          <div class="brisket-calculator__temp">
+            150–159°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 150 to 159 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>150°F</span>
+          </label>
+        </div>
+
+
+        <!-- 160 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="160" data-end="169">
+          <div class="brisket-calculator__temp">
+            160–169°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 160 to 169 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>160°F</span>
+          </label>
+        </div>
+
+
+        <!-- 170 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="170" data-end="179">
+          <div class="brisket-calculator__temp">
+            170–179°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 170 to 179 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>170°F</span>
+          </label>
+        </div>
+
+
+        <!-- 180 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="180" data-end="189">
+          <div class="brisket-calculator__temp">
+            180–189°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 180 to 189 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>180°F</span>
+          </label>
+        </div>
+
+
+        <!-- 190 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="190" data-end="194">
+          <div class="brisket-calculator__temp">
+            190–194°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 190 to 194 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>190°F</span>
+          </label>
+        </div>
+
+
+        <!-- 195 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="195" data-end="199">
+          <div class="brisket-calculator__temp">
+            195–199°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 195 to 199 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>195°F</span>
+          </label>
+        </div>
+
+
+        <!-- 200 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="200" data-end="204">
+          <div class="brisket-calculator__temp">
+            200–204°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 200 to 204 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>200°F</span>
+          </label>
+        </div>
+
+
+        <!-- 205 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="205" data-end="209">
+          <div class="brisket-calculator__temp">
+            205–209°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 205 to 209 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input">
+            <span>205°F</span>
+          </label>
+        </div>
+
+
+        <!-- 210 -->
+        <div class="brisket-calculator__row" data-render-row="" data-group="hold" data-start="210" data-end="210">
+          <div class="brisket-calculator__temp">
+            210°F
+          </div>
+
+          <div>
+            <input type="number" class="brisket-calculator__hours" min="0" step="0.01" placeholder="0" inputmode="decimal" aria-label="Hold hours at 210 degrees Fahrenheit">
+          </div>
+
+          <label class="brisket-calculator__exact">
+            <input type="checkbox" class="brisket-calculator__exact-input" checked="" disabled="">
+            <span>210°F</span>
+          </label>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ============================= -->
+    <!-- RESULTS -->
+    <!-- ============================= -->
+
+    <section class="brisket-calculator__results">
+
+      <div class="brisket-calculator__result-small">
+        <span>Cook Rendering</span>
+        <strong data-cook-output="">0.0%</strong>
+      </div>
+
+      <div class="brisket-calculator__result-small">
+        <span>Hold Rendering</span>
+        <strong data-hold-output="">0.0%</strong>
+      </div>
+
+      <div class="brisket-calculator__result-total">
+        <span>Estimated Final Rendering</span>
+        <strong data-total-output="">0.0%</strong>
+
+        <div class="brisket-calculator__progress">
+          <div class="brisket-calculator__progress-bar" data-progress-bar=""></div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <button type="button" class="brisket-calculator__reset" data-reset-calculator="">
+      Reset Calculator
+    </button>
+
+
+    
+      <div class="brisket-calculator__disclaimer">
+        <p>This calculator provides an estimate based on time and internal temperature. Actual brisket tenderness can vary.</p>
+      </div>
+    
+
+  </div>
+</div>
+
+<h2>Rendering rates</h2>
+<p>Percent rendered per hour in each zone. The weighted rate is the average of the exact interpolated rates at each whole degree in the zone; check Exact Temp when the brisket was held at exactly the zone's lower-bound temperature (for example, holding exactly at 150°F). 210°F is already a single exact temperature, so its box is always on. Rates are the same for cook and hold.</p>
+<table>
+<tr><th>Internal temp</th><th>Weighted rate (%/hr)</th><th>Exact Temp rate (%/hr)</th></tr>
+<tr><td>140–149°F</td><td>1.4</td><td>1.0 at 140°F</td></tr>
+<tr><td>150–159°F</td><td>2.5</td><td>2.0 at 150°F</td></tr>
+<tr><td>160–169°F</td><td>3.9</td><td>3.0 at 160°F</td></tr>
+<tr><td>170–179°F</td><td>6.8</td><td>5.0 at 170°F</td></tr>
+<tr><td>180–189°F</td><td>13.1</td><td>9.0 at 180°F</td></tr>
+<tr><td>190–194°F</td><td>20.8</td><td>18.0 at 190°F</td></tr>
+<tr><td>195–199°F</td><td>29.0</td><td>25.0 at 195°F</td></tr>
+<tr><td>200–204°F</td><td>43.0</td><td>35.0 at 200°F</td></tr>
+<tr><td>205–209°F</td><td>63.0</td><td>55.0 at 205°F</td></tr>
+<tr><td>210°F</td><td>—</td><td>75.0</td></tr>
+</table>
+
+<h2>How it works</h2>
+<ul>
+<li>Cook Rendering = sum over the cook rows of (hours × that row's rate).</li>
+<li>Hold Rendering = the same sum over the hold rows.</li>
+<li>Estimated Final Rendering = Cook Rendering + Hold Rendering — simple addition. The displayed percentage is not capped at 100% (the progress bar stops visually at 100).</li>
+<li>Exact Temp checked: the rate at the zone's starting temperature. Unchecked: the weighted average rate for the whole zone, computed by averaging the exact interpolated rate at each whole degree in the zone.</li>
+</ul>
+
+<h2>Changelog</h2>
+<ul>
+<li>August 30, 2026: Temperature entries now represent weighted rendering rates across the temperature zones (i.e. 150 is now the weighted rendering rate from 150 to 159°F) rather than a single exact temperature, giving a more realistic rendering estimate. An "Exact Temp" option has also been added for controlled cooks or holds (for example, if you are holding exactly at 150°F then check the "Exact Temp" box for that field).</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>Brisket rendering calculator: <a href="https://smoketrailsbbq.com/pages/brisket-rendering-calculator">Smoke Trails BBQ</a>. Calculator markup, styles, and script cleaned up from the page source Elan downloaded; Shopify theme, header, footer, tracking, and signup form removed.</li>
+</ul>
+
+<p><a href="../index.html">← Back to all recipes</a></p>
+
+<script>
+(function() {
+
+  const calculatorId = 'brisket-calculator';
+
+
+  /*
+   * EXACT RENDERING-RATE ANCHORS
+   *
+   * Temperature °F : rendering percentage per hour
+   */
+  const renderingAnchors = [
+    { temp: 140, rate: 1 },
+    { temp: 150, rate: 2 },
+    { temp: 160, rate: 3 },
+    { temp: 170, rate: 5 },
+    { temp: 180, rate: 9 },
+    { temp: 190, rate: 18 },
+    { temp: 195, rate: 25 },
+    { temp: 200, rate: 35 },
+    { temp: 205, rate: 55 },
+    { temp: 210, rate: 75 }
+  ];
+
+
+  /*
+   * Returns the rendering rate at an exact temperature.
+   *
+   * Anchor temperatures use their exact rate.
+   * Temperatures between anchors are linearly interpolated.
+   */
+  function getExactRate(temp) {
+
+    for (let i = 0; i < renderingAnchors.length; i++) {
+
+      if (temp === renderingAnchors[i].temp) {
+        return renderingAnchors[i].rate;
+      }
+
+    }
+
+
+    for (let i = 0; i < renderingAnchors.length - 1; i++) {
+
+      const lower = renderingAnchors[i];
+      const upper = renderingAnchors[i + 1];
+
+      if (temp > lower.temp && temp < upper.temp) {
+
+        const fraction =
+          (temp - lower.temp) /
+          (upper.temp - lower.temp);
+
+        return lower.rate +
+          ((upper.rate - lower.rate) * fraction);
+
+      }
+
+    }
+
+
+    if (temp <= renderingAnchors[0].temp) {
+      return renderingAnchors[0].rate;
+    }
+
+    return renderingAnchors[renderingAnchors.length - 1].rate;
+
+  }
+
+
+
+  /*
+   * Returns the default weighted rate for a temperature zone.
+   *
+   * Example:
+   * 140–149°F calculates the exact interpolated rate at:
+   *
+   * 140, 141, 142 ... 149
+   *
+   * and then averages those values.
+   */
+  function getZoneRate(startTemp, endTemp) {
+
+    if (startTemp === endTemp) {
+      return getExactRate(startTemp);
+    }
+
+    let totalRate = 0;
+    let temperatureCount = 0;
+
+    for (let temp = startTemp; temp <= endTemp; temp++) {
+
+      totalRate += getExactRate(temp);
+      temperatureCount++;
+
+    }
+
+    return totalRate / temperatureCount;
+
+  }
+
+
+
+  function initializeCalculator() {
+
+    const calculator = document.getElementById(calculatorId);
+
+    if (!calculator) {
+      return;
+    }
+
+    if (calculator.dataset.initialized === 'true') {
+      return;
+    }
+
+    calculator.dataset.initialized = 'true';
+
+
+    const rows =
+      calculator.querySelectorAll('[data-render-row]');
+
+    const cookOutput =
+      calculator.querySelector('[data-cook-output]');
+
+    const holdOutput =
+      calculator.querySelector('[data-hold-output]');
+
+    const totalOutput =
+      calculator.querySelector('[data-total-output]');
+
+    const progressBar =
+      calculator.querySelector('[data-progress-bar]');
+
+    const resetButton =
+      calculator.querySelector('[data-reset-calculator]');
+
+
+
+    function calculateGroup(groupName) {
+
+      let groupTotal = 0;
+
+      rows.forEach(function(row) {
+
+        if (row.dataset.group !== groupName) {
+          return;
+        }
+
+        const startTemp =
+          parseInt(row.dataset.start, 10);
+
+        const endTemp =
+          parseInt(row.dataset.end, 10);
+
+        const hoursInput =
+          row.querySelector('.brisket-calculator__hours');
+
+        const exactCheckbox =
+          row.querySelector('.brisket-calculator__exact-input');
+
+        let hours =
+          parseFloat(hoursInput.value);
+
+        if (!Number.isFinite(hours) || hours < 0) {
+          hours = 0;
+        }
+
+
+        let rate;
+
+        /*
+         * Exact Temp checked:
+         * use the rate at the first/listed temperature.
+         *
+         * Exact Temp unchecked:
+         * use the weighted average for the whole zone.
+         */
+        if (exactCheckbox && exactCheckbox.checked) {
+
+          rate = getExactRate(startTemp);
+
+        } else {
+
+          rate = getZoneRate(startTemp, endTemp);
+
+        }
+
+
+        groupTotal += hours * rate;
+
+      });
+
+
+      return groupTotal;
+
+    }
+
+
+
+    function updateCalculator() {
+
+      const cookTotal =
+        calculateGroup('cook');
+
+      const holdTotal =
+        calculateGroup('hold');
+
+      const finalTotal =
+        cookTotal + holdTotal;
+
+
+      cookOutput.textContent =
+        cookTotal.toFixed(1) + '%';
+
+      holdOutput.textContent =
+        holdTotal.toFixed(1) + '%';
+
+      totalOutput.textContent =
+        finalTotal.toFixed(1) + '%';
+
+
+      /*
+       * Progress bar stops visually at 100,
+       * but the displayed rendering percentage
+       * is NOT capped at 100%.
+       */
+      const visualProgress =
+        Math.min(Math.max(finalTotal, 0), 100);
+
+      progressBar.style.width =
+        visualProgress + '%';
+
+    }
+
+
+
+    /*
+     * Recalculate whenever an hours field
+     * or Exact Temp checkbox changes.
+     */
+    rows.forEach(function(row) {
+
+      const hoursInput =
+        row.querySelector('.brisket-calculator__hours');
+
+      const exactCheckbox =
+        row.querySelector('.brisket-calculator__exact-input');
+
+
+      hoursInput.addEventListener(
+        'input',
+        updateCalculator
+      );
+
+
+      if (exactCheckbox) {
+
+        exactCheckbox.addEventListener(
+          'change',
+          updateCalculator
+        );
+
+      }
+
+    });
+
+
+
+    /*
+     * Reset calculator
+     */
+    resetButton.addEventListener('click', function() {
+
+      rows.forEach(function(row) {
+
+        const hoursInput =
+          row.querySelector('.brisket-calculator__hours');
+
+        const exactCheckbox =
+          row.querySelector('.brisket-calculator__exact-input');
+
+
+        hoursInput.value = '';
+
+
+        if (
+          exactCheckbox &&
+          !exactCheckbox.disabled
+        ) {
+          exactCheckbox.checked = false;
+        }
+
+      });
+
+
+      updateCalculator();
+
+    });
+
+
+    updateCalculator();
+
+  }
+
+
+
+  /*
+   * Normal storefront load
+   */
+  if (document.readyState === 'loading') {
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      initializeCalculator
+    );
+
+  } else {
+
+    initializeCalculator();
+
+  }
+
+
+
+  
+})();
+</script>
+</body>
+</html>
