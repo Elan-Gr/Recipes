@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="last-updated" content="2026-11-06">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turkey Smoking Planner — Elan's Recipes</title>
+<link rel="stylesheet" href="../style.css">
+<script type="application/json" id="usda-ingredients">[]</script>
+</head>
+<body>
+<h1>Turkey Smoking Planner</h1>
+<p>For holiday birds, planned to the minute. A turkey is the one cut where the pull temperature and the safety minimum are the same number — 165°F — so there is no margin for error. This planner covers brining, whole vs spatchcocked, and the day-before checklist, then hands you to the main calculator to plan the cook to the minute. Modeled on the turkey planner at <a href="https://meatsmokingcalculator.com/meats/turkey-smoking-planner/">MeatSmokingCalculator.com</a>.</p>
+<p><a href="Meat%20Smoking%20Calculator.html?cut=whole-turkey">Now plan a turkey cook to the minute →</a></p>
+
+<h2>Turkey at a glance</h2>
+<ul>
+<li><strong>Pit temps:</strong> 225°F / 250°F / 275°F (or 325°F hot and fast)</li>
+<li><strong>Time rule of thumb:</strong> whole bird ~0.65 hr/lb at 225°F · ~0.55 hr/lb at 250°F · ~0.45 hr/lb at 275°F</li>
+<li><strong>Pull temp:</strong> 165°F — and the USDA minimum is 165°F too</li>
+<li><strong>Rest:</strong> 20 min</li>
+<li><strong>Best woods:</strong> Cherry, apple, pecan, light hickory</li>
+</ul>
+
+<h2>Brine or not?</h2>
+<p>Brine at least 4 hours if you brine at all — a wet brine or a dry brine both work. Skip the brine if the bird is "enhanced," basted, or kosher: those are already salted, and more salt just makes it salty. Pat the skin dry before it goes on the pit; wet skin steams instead of crisping.</p>
+
+<h2>Whole vs spatchcocked</h2>
+<p>Spatchcocking — removing the backbone and flattening the bird — is the single biggest time saver in turkey smoking. The bird cooks evenly, the skin crisps, and the cook runs roughly an hour shorter at the same weight. Whole birds look better on the table; spatchcocked birds eat better.</p>
+<table>
+<tr><th>Weight</th><th>Whole, 225°F</th><th>Whole, 250°F</th><th>Whole, 275°F</th><th>Spatchcocked, 225°F</th><th>Spatchcocked, 250°F</th><th>Spatchcocked, 275°F</th></tr>
+<tr><td>10 lb</td><td>~6 hr 30 min</td><td>~5 hr 30 min</td><td>~4 hr 30 min</td><td>~6 hr</td><td>~5 hr</td><td>~4 hr</td></tr>
+<tr><td>15 lb</td><td>~9 hr 45 min</td><td>~8 hr 15 min</td><td>~6 hr 45 min</td><td>~9 hr</td><td>~7 hr 30 min</td><td>~6 hr</td></tr>
+<tr><td>20 lb</td><td>~13 hr</td><td>~11 hr</td><td>~9 hr</td><td>~12 hr</td><td>~10 hr</td><td>~8 hr</td></tr>
+</table>
+<p>Hot and fast at 325°F runs roughly 2–4 hours for a 10–20 lb whole bird. Poultry skin needs heat to render its fat and dry out — 225°F does not supply it, and the result is safe, cooked, and unpleasantly rubbery. Run birds at 275°F or higher, or finish them hot for the last twenty minutes.</p>
+
+<h2>Day-before checklist</h2>
+<ul>
+<li><strong>Thaw:</strong> 24 hours per 4–5 lb in the fridge. A 15 lb bird needs 3–4 days.</li>
+<li><strong>Brine:</strong> start at least 4 hours before the cook (or skip it — see above).</li>
+<li><strong>Fuel and wood:</strong> enough charcoal or pellets for the full cook, plus cherry, apple, pecan, or light hickory.</li>
+<li><strong>Thermometer:</strong> a leave-in probe in the thickest part of the thigh, not touching bone.</li>
+<li><strong>Plan:</strong> work the cook backward from serving time with the main calculator, and add a buffer — a turkey that finishes early holds fine, a late one does not.</li>
+</ul>
+
+<h2>How much turkey do I need?</h2>
+<p>Enter your headcount — the planner works backward through trim and cook loss to the raw weight to buy.</p>
+<p>
+<label for="guests">Guests:</label>
+<input type="number" id="guests" min="0" step="1" value="10" style="width:4em">
+<label for="appetite">Appetite:</label>
+<select id="appetite">
+<option value="0.49">Light / lots of sides</option>
+<option value="0.65" selected>Average</option>
+<option value="0.85">Hearty / meat's the star</option>
+</select>
+<label for="leftovers">Leftovers:</label>
+<select id="leftovers">
+<option value="1" selected>None</option>
+<option value="1.25">Some (+25%)</option>
+<option value="1.5">Lots (+50%)</option>
+</select>
+</p>
+<p>
+<label for="trim-loss">Trim loss (% of raw):</label>
+<input type="number" id="trim-loss" min="0" max="50" step="any" value="15" style="width:4em">
+<label for="cook-loss">Cook loss (% of trimmed):</label>
+<input type="number" id="cook-loss" min="0" max="60" step="any" value="35" style="width:4em">
+</p>
+<div id="serving-result">
+<p><strong>Buy about:</strong> <span id="out-buy">—</span></p>
+<p><span id="out-yield">—</span></p>
+<p><span id="out-losses">—</span></p>
+</div>
+
+<h2>Notes</h2>
+<ul>
+<li>Pull at 165°F in the thickest part of the thigh. The breast will read a few degrees lower — that is normal.</li>
+<li>Rest 20 minutes before carving so the juices settle.</li>
+<li>Keep hot-held turkey above 140°F. Below that, the clock starts — 2 to 4 hours in the danger zone before food must be served or discarded.</li>
+<li>A turkey that finishes early is a solved problem: wrap it and hold it. A late turkey ruins the meal — plan against the slow end and rest longer.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>Turkey smoking planner and time/temperature tables: <a href="https://meatsmokingcalculator.com/meats/turkey-smoking-planner/">MeatSmokingCalculator.com</a> (rates, pull temperature, and serving math as published there, October 2026).</li>
+</ul>
+
+<p><a href="../index.html">← Back to all recipes</a></p>
+
+<script>
+function fmtLbOz(lb) {
+  var whole = Math.floor(lb + 1e-9);
+  var oz = Math.round((lb - whole) * 16);
+  if (oz === 16) { whole += 1; oz = 0; }
+  return oz ? whole + " lb " + oz + " oz" : whole + " lb";
+}
+function updateServing() {
+  var guests = parseFloat(document.getElementById("guests").value) || 0;
+  var perPerson = parseFloat(document.getElementById("appetite").value);
+  var leftoverMult = parseFloat(document.getElementById("leftovers").value);
+  var trimLoss = (parseFloat(document.getElementById("trim-loss").value) || 0) / 100;
+  var cookLoss = (parseFloat(document.getElementById("cook-loss").value) || 0) / 100;
+  var buy = document.getElementById("out-buy");
+  var yld = document.getElementById("out-yield");
+  var losses = document.getElementById("out-losses");
+  if (guests <= 0) {
+    buy.textContent = "—";
+    yld.textContent = "";
+    losses.textContent = "";
+    return;
+  }
+  var cooked = guests * perPerson * leftoverMult;
+  var trimmed = cooked / (1 - cookLoss);
+  var raw = trimmed / (1 - trimLoss);
+  buy.textContent = fmtLbOz(raw) + " (" + raw.toFixed(1) + " lb raw)";
+  yld.textContent = "After trimming: " + fmtLbOz(trimmed) + " · on the plate cooked: " + fmtLbOz(cooked) + ".";
+  losses.textContent = "Lost to trim: " + fmtLbOz(raw - trimmed) + " · lost to the cook: " + fmtLbOz(trimmed - cooked) + ".";
+}
+["guests", "appetite", "leftovers", "trim-loss", "cook-loss"].forEach(function(id) {
+  document.getElementById(id).addEventListener("input", updateServing);
+  document.getElementById(id).addEventListener("change", updateServing);
+});
+updateServing();
+</script>
+</body>
+</html>
