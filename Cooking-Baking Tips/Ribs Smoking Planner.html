@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="last-updated" content="2026-11-06">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ribs Smoking Planner — Elan's Recipes</title>
+<link rel="stylesheet" href="../style.css">
+<script type="application/json" id="usda-ingredients">[]</script>
+</head>
+<body>
+<h1>Ribs Smoking Planner</h1>
+<p>3-2-1, competition bite, or fall-off-the-bone — ribs are timed per rack, not per pound, so the method is the whole plan. This planner covers the methods, the bend test, and sauce timing, then hands you to the main calculator to plan the cook to the minute. Modeled on the ribs planner at <a href="https://meatsmokingcalculator.com/meats/ribs-smoking-calculator/">MeatSmokingCalculator.com</a>.</p>
+<p><a href="Meat%20Smoking%20Calculator.html?cut=baby-backs">Now plan a ribs cook to the minute →</a></p>
+
+<h2>Ribs at a glance</h2>
+<ul>
+<li><strong>Pit temp:</strong> 225°F slow and low (300°F hot and fast)</li>
+<li><strong>Time rule of thumb:</strong> Baby backs fall-off-the-bone ~5 hr · 3-2-1 method ~6 hr · Spare ribs / St. Louis ~6 hr</li>
+<li><strong>Done:</strong> probe-tender, 195–205°F — but the bend test beats any thermometer</li>
+<li><strong>Rest:</strong> 10–15 min</li>
+<li><strong>Best woods:</strong> Hickory, apple, cherry</li>
+</ul>
+
+<h2>Methods and timing</h2>
+<table>
+<tr><th>Method</th><th>Cut</th><th>Pit temp</th><th>Approx. time</th><th>How it goes</th></tr>
+<tr><td>Fall-off-the-bone</td><td>Baby backs</td><td>225°F</td><td>~5 hr</td><td>Straight through, unwrapped, until probe-tender</td></tr>
+<tr><td>3-2-1 method</td><td>Baby backs</td><td>225°F</td><td>~6 hr</td><td>3 hr smoke + 2 hr wrapped + 1 hr sauced and finished</td></tr>
+<tr><td>Competition bite</td><td>Baby backs</td><td>225°F</td><td>~5 hr</td><td>Bite comes clean off the bone, meat stays on the bone</td></tr>
+<tr><td>Competition 2.5-1-1</td><td>Baby backs</td><td>225°F</td><td>~4 hr 30 min</td><td>2.5 hr smoke + 1 hr wrapped + 1 hr finish</td></tr>
+<tr><td>Spare ribs / St. Louis</td><td>Spares</td><td>225°F</td><td>~6 hr</td><td>Bigger, meatier rack — about an hour longer than baby backs</td></tr>
+<tr><td>Hot and fast</td><td>Baby backs</td><td>300°F</td><td>~3 hr</td><td>Same finish, half the time</td></tr>
+</table>
+<p>The 3-2-1 method is three hours of smoke, two hours wrapped, one hour sauced, all at 225°F. For the wrapped stage, add a little liquid — apple juice, butter, honey — and seal tight. For the finish, unwrap, sauce, and let the sauce set on the pit.</p>
+
+<h2>The bend test</h2>
+<p>There is no reliable temperature for ribs. Lift the rack with tongs from one end: done is when it bends and the surface cracks. Probe-tender runs about 195–205°F, but the bend is the test that matters. Overcooking turns baby backs to mush — leaner and smaller than spares, they finish roughly an hour sooner.</p>
+
+<h2>Sauce and spritz timing</h2>
+<p>Sauce in the last 20–30 minutes only — any earlier and the sugars burn before the meat is done. Spritz lightly once the bark is set, and don't soak the meat; every open lid costs heat and time.</p>
+
+<h2>How many ribs do I need?</h2>
+<p>Enter your headcount — the planner works back to the raw weight and racks to buy. Racks run about 1.7 lb each on average.</p>
+<p>
+<label for="guests">Guests:</label>
+<input type="number" id="guests" min="0" step="1" value="10" style="width:4em">
+<label for="appetite">Appetite:</label>
+<select id="appetite">
+<option value="0.22">Light / lots of sides</option>
+<option value="0.3" selected>Average</option>
+<option value="0.39">Hearty / meat's the star</option>
+</select>
+<label for="leftovers">Leftovers:</label>
+<select id="leftovers">
+<option value="1" selected>None</option>
+<option value="1.25">Some (+25%)</option>
+<option value="1.5">Lots (+50%)</option>
+</select>
+</p>
+<p>
+<label for="trim-loss">Trim loss (% of raw):</label>
+<input type="number" id="trim-loss" min="0" max="50" step="any" value="15" style="width:4em">
+<label for="cook-loss">Cook loss (% of trimmed):</label>
+<input type="number" id="cook-loss" min="0" max="60" step="any" value="35" style="width:4em">
+</p>
+<div id="serving-result">
+<p><strong>Buy about:</strong> <span id="out-buy">—</span></p>
+<p><span id="out-yield">—</span></p>
+<p><span id="out-losses">—</span></p>
+</div>
+
+<h2>Notes</h2>
+<ul>
+<li>Ribs are timed per rack, not per pound. Three racks in a rib rack take the same time as one — you are limited by grate area, not hours.</li>
+<li>Rest 10–15 minutes before slicing so the juices settle.</li>
+<li>Spare ribs are bigger and meatier than baby backs; plan about an hour longer.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>Ribs smoking planner and method tables: <a href="https://meatsmokingcalculator.com/meats/ribs-smoking-calculator/">MeatSmokingCalculator.com</a> (methods, times, and serving math as published there, October 2026).</li>
+</ul>
+
+<p><a href="../index.html">← Back to all recipes</a></p>
+
+<script>
+function fmtLbOz(lb) {
+  var whole = Math.floor(lb + 1e-9);
+  var oz = Math.round((lb - whole) * 16);
+  if (oz === 16) { whole += 1; oz = 0; }
+  return oz ? whole + " lb " + oz + " oz" : whole + " lb";
+}
+function updateServing() {
+  var guests = parseFloat(document.getElementById("guests").value) || 0;
+  var perPerson = parseFloat(document.getElementById("appetite").value);
+  var leftoverMult = parseFloat(document.getElementById("leftovers").value);
+  var trimLoss = (parseFloat(document.getElementById("trim-loss").value) || 0) / 100;
+  var cookLoss = (parseFloat(document.getElementById("cook-loss").value) || 0) / 100;
+  var buy = document.getElementById("out-buy");
+  var yld = document.getElementById("out-yield");
+  var losses = document.getElementById("out-losses");
+  if (guests <= 0) {
+    buy.textContent = "—";
+    yld.textContent = "";
+    losses.textContent = "";
+    return;
+  }
+  var cooked = guests * perPerson * leftoverMult;
+  var trimmed = cooked / (1 - cookLoss);
+  var raw = trimmed / (1 - trimLoss);
+  var racks = Math.max(1, Math.ceil(raw / 1.7));
+  buy.textContent = fmtLbOz(raw) + " (about " + racks + (racks === 1 ? " rack" : " racks") + ")";
+  yld.textContent = "After trimming: " + fmtLbOz(trimmed) + " · on the plate cooked: " + fmtLbOz(cooked) + ".";
+  losses.textContent = "Lost to trim: " + fmtLbOz(raw - trimmed) + " · lost to the cook: " + fmtLbOz(trimmed - cooked) + ".";
+}
+["guests", "appetite", "leftovers", "trim-loss", "cook-loss"].forEach(function(id) {
+  document.getElementById(id).addEventListener("input", updateServing);
+  document.getElementById(id).addEventListener("change", updateServing);
+});
+updateServing();
+</script>
+</body>
+</html>
