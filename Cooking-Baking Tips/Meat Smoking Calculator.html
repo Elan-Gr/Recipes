@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="last-updated" content="2026-11-06">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meat Smoking Calculator — Elan's Recipes</title>
+<link rel="stylesheet" href="../style.css">
+<script type="application/json" id="usda-ingredients">[]</script>
+</head>
+<body>
+<h1>Meat Smoking Calculator</h1>
+<p>Pick a cut and a pit temperature, set your serving time, and it plans the cook backward — prep, smoke, rest, and a buffer — so the meat is ready when you are. Times are planning estimates from the master smoking chart, not promises; real cooks vary by 25 percent or more, and the probe is the only instrument that knows whether your piece of meat is done. Per-pound cuts scale with weight; per-rack cuts do not — a second rack on the same grate takes the same time as one. Modeled on the cook-time calculator and master chart at <a href="https://smokercalc.com/reference/smoking-time-and-temp-chart/">SmokerCalc.com</a> (the same data file behind <a href="https://meatsmokingcalculator.com/meats/brisket-smoking-calculator/">MeatSmokingCalculator.com</a>).</p>
+
+<h2>Plan your cook</h2>
+<p>
+<label for="cut">Cut:</label>
+<select id="cut"></select>
+</p>
+<p>Pit temperature:
+<label><input type="radio" name="pit" value="225" checked> 225°F</label>
+<label><input type="radio" name="pit" value="250"> 250°F</label>
+<label><input type="radio" name="pit" value="275"> 275°F</label>
+</p>
+<p id="amount-lb">
+<label for="lb">Weight:</label>
+<input type="number" id="lb" min="0" step="any" value="14" style="width:4em"> lb
+<input type="number" id="oz" min="0" max="15" step="any" value="0" style="width:4em"> oz
+</p>
+<p id="amount-rack" style="display:none">
+<label for="racks">Racks / pieces:</label>
+<input type="number" id="racks" min="1" step="1" value="1" style="width:4em">
+<span id="rack-note">Time is per rack and does not change with more racks.</span>
+</p>
+<p>
+<label for="eat-date">Eat date:</label>
+<input type="date" id="eat-date">
+<label for="eat-time">Eat time:</label>
+<input type="time" id="eat-time" value="18:00">
+</p>
+<p>Prep:
+<label><input type="checkbox" id="trim-on" checked> Trim</label>
+<select id="trim-min">
+<option value="10">10 min</option>
+<option value="15">15 min</option>
+<option value="20">20 min</option>
+<option value="30" selected>30 min</option>
+<option value="45">45 min</option>
+<option value="60">1 hr</option>
+<option value="90">1 hr 30 min</option>
+</select>
+<label><input type="checkbox" id="rub-on" checked> Rub / Season rest</label>
+<select id="rub-min">
+<option value="15">15 min</option>
+<option value="30" selected>30 min</option>
+<option value="45">45 min</option>
+<option value="60">1 hr</option>
+<option value="90">1 hr 30 min</option>
+<option value="120">2 hr</option>
+<option value="180">3 hr</option>
+<option value="240">4 hr</option>
+<option value="480">8 hr</option>
+<option value="720">12 hr</option>
+<option value="1080">18 hr</option>
+<option value="1440">24 hr</option>
+</select>
+<label><input type="checkbox" id="counter-on" checked> Counter rest before cook</label>
+<select id="counter-min">
+<option value="15">15 min</option>
+<option value="30">30 min</option>
+<option value="45" selected>45 min</option>
+<option value="60">1 hr</option>
+<option value="90">1 hr 30 min</option>
+<option value="120">2 hr</option>
+<option value="180">3 hr</option>
+<option value="240">4 hr</option>
+</select>
+</p>
+<p>
+<label><input type="checkbox" id="wrap-on"> Wrap mid-cook (power through the stall; softer bark, faster finish)</label>
+</p>
+<p>After the cook:
+<label><input type="checkbox" id="rest-on" checked> Post-cook rest</label>
+<select id="rest-min">
+<option value="0">0 min</option>
+<option value="5">5 min</option>
+<option value="10">10 min</option>
+<option value="15">15 min</option>
+<option value="20">20 min</option>
+<option value="25">25 min</option>
+<option value="30">30 min</option>
+<option value="45">45 min</option>
+<option value="60" selected>1 hr</option>
+<option value="90">1 hr 30 min</option>
+<option value="120">2 hr</option>
+<option value="180">3 hr</option>
+<option value="240">4 hr</option>
+<option value="300">5 hr</option>
+<option value="360">6 hr</option>
+</select>
+<label for="buffer-min">Buffer:</label>
+<select id="buffer-min">
+<option value="0">0 min</option>
+<option value="30">30 min</option>
+<option value="60">1 hr</option>
+<option value="90">1 hr 30 min</option>
+<option value="120" selected>2 hr</option>
+<option value="180">3 hr</option>
+<option value="240">4 hr</option>
+</select>
+</p>
+
+<div id="result">
+<p><strong id="out-summary">—</strong></p>
+<p id="out-detail">—</p>
+<p id="out-facts">—</p>
+<ol id="out-timeline"></ol>
+</div>
+
+<h2>Master smoking chart</h2>
+<p>Per-pound cuts scale with weight; per-rack cuts do not. Pull temperature is a texture target and is separate from the USDA safe minimum.</p>
+<table>
+<tr><th>Cut</th><th>Group</th><th>Typical weight</th><th>225°F</th><th>250°F</th><th>275°F</th><th>Pull at</th><th>Pull range</th><th>USDA min</th><th>Rest</th><th>Stall</th></tr>
+<tr><td>Beef brisket, whole packer</td><td>Beef</td><td>10 to 18 lb</td><td>1.5 h/lb</td><td>1.25 h/lb</td><td>1 h/lb</td><td>203°F</td><td>195 to 205°F</td><td>145°F</td><td>60 min</td><td>Yes</td></tr>
+<tr><td>Beef brisket flat</td><td>Beef</td><td>4 to 8 lb</td><td>1.5 h/lb</td><td>1.25 h/lb</td><td>1.05 h/lb</td><td>203°F</td><td>195 to 205°F</td><td>145°F</td><td>45 min</td><td>Yes</td></tr>
+<tr><td>Pork shoulder, Boston butt</td><td>Pork</td><td>6 to 10 lb</td><td>1.75 h/lb</td><td>1.5 h/lb</td><td>1.25 h/lb</td><td>203°F</td><td>200 to 205°F</td><td>145°F</td><td>45 min</td><td>Yes</td></tr>
+<tr><td>Pork picnic shoulder</td><td>Pork</td><td>6 to 9 lb</td><td>1.75 h/lb</td><td>1.5 h/lb</td><td>1.25 h/lb</td><td>203°F</td><td>200 to 205°F</td><td>145°F</td><td>45 min</td><td>Yes</td></tr>
+<tr><td>Pork spare ribs, St. Louis cut</td><td>Pork</td><td>2.5 to 4 lb</td><td>6 h/rack</td><td>5 h/rack</td><td>4.25 h/rack</td><td>200°F</td><td>195 to 203°F</td><td>145°F</td><td>15 min</td><td>No</td></tr>
+<tr><td>Pork baby back ribs</td><td>Pork</td><td>1.5 to 2.5 lb</td><td>5 h/rack</td><td>4.25 h/rack</td><td>3.5 h/rack</td><td>198°F</td><td>195 to 200°F</td><td>145°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Beef short ribs, plate</td><td>Beef</td><td>3 to 6 lb</td><td>1.5 h/lb</td><td>1.3 h/lb</td><td>1.1 h/lb</td><td>203°F</td><td>200 to 208°F</td><td>145°F</td><td>30 min</td><td>Yes</td></tr>
+<tr><td>Beef chuck roast</td><td>Beef</td><td>3 to 5 lb</td><td>1.5 h/lb</td><td>1.25 h/lb</td><td>1.05 h/lb</td><td>205°F</td><td>200 to 210°F</td><td>145°F</td><td>30 min</td><td>Yes</td></tr>
+<tr><td>Beef tri-tip</td><td>Beef</td><td>2 to 3 lb</td><td>0.75 h/lb</td><td>0.65 h/lb</td><td>0.5 h/lb</td><td>135°F</td><td>130 to 140°F</td><td>145°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Pork loin roast</td><td>Pork</td><td>3 to 5 lb</td><td>0.75 h/lb</td><td>0.6 h/lb</td><td>0.5 h/lb</td><td>145°F</td><td>145 to 150°F</td><td>145°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Pork tenderloin</td><td>Pork</td><td>1 to 1.5 lb</td><td>2 h/rack</td><td>1.6 h/rack</td><td>1.25 h/rack</td><td>145°F</td><td>145 to 150°F</td><td>145°F</td><td>5 min</td><td>No</td></tr>
+<tr><td>Whole chicken</td><td>Poultry</td><td>3.5 to 6 lb</td><td>0.75 h/lb</td><td>0.6 h/lb</td><td>0.5 h/lb</td><td>165°F</td><td>165 to 175°F</td><td>165°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Chicken thighs, bone in</td><td>Poultry</td><td>1.5 to 3 lb</td><td>2.25 h/rack</td><td>1.75 h/rack</td><td>1.4 h/rack</td><td>180°F</td><td>175 to 185°F</td><td>165°F</td><td>5 min</td><td>No</td></tr>
+<tr><td>Whole turkey</td><td>Poultry</td><td>10 to 20 lb</td><td>0.65 h/lb</td><td>0.55 h/lb</td><td>0.45 h/lb</td><td>165°F</td><td>165 to 170°F</td><td>165°F</td><td>20 min</td><td>No</td></tr>
+<tr><td>Turkey breast, bone in</td><td>Poultry</td><td>4 to 8 lb</td><td>0.6 h/lb</td><td>0.5 h/lb</td><td>0.4 h/lb</td><td>165°F</td><td>162 to 168°F</td><td>165°F</td><td>15 min</td><td>No</td></tr>
+<tr><td>Salmon fillet</td><td>Fish</td><td>1 to 3 lb</td><td>1 h/rack</td><td>0.8 h/rack</td><td>0.65 h/rack</td><td>145°F</td><td>125 to 145°F</td><td>145°F</td><td>0 min</td><td>No</td></tr>
+<tr><td>Beef back ribs</td><td>Beef</td><td>3 to 5 lb</td><td>5.5 h/rack</td><td>4.5 h/rack</td><td>3.75 h/rack</td><td>203°F</td><td>198 to 205°F</td><td>145°F</td><td>20 min</td><td>Yes</td></tr>
+<tr><td>Fresh sausage links</td><td>Pork</td><td>2 to 5 lb</td><td>2.5 h/rack</td><td>2 h/rack</td><td>1.6 h/rack</td><td>160°F</td><td>160 to 165°F</td><td>160°F</td><td>5 min</td><td>No</td></tr>
+<tr><td>Beef brisket point</td><td>Beef</td><td>4 to 7 lb</td><td>1.5 h/lb</td><td>1.3 h/lb</td><td>1.1 h/lb</td><td>205°F</td><td>200 to 208°F</td><td>145°F</td><td>30 min</td><td>Yes</td></tr>
+<tr><td>Beef burnt ends</td><td>Beef</td><td>3 to 6 lb</td><td>3 h/rack</td><td>2.5 h/rack</td><td>2 h/rack</td><td>205°F</td><td>200 to 208°F</td><td>145°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Beef cheeks</td><td>Beef</td><td>2 to 4 lb</td><td>1.5 h/lb</td><td>1.3 h/lb</td><td>1.1 h/lb</td><td>205°F</td><td>200 to 210°F</td><td>145°F</td><td>20 min</td><td>Yes</td></tr>
+<tr><td>Prime rib, standing rib roast</td><td>Beef</td><td>5 to 12 lb</td><td>0.6 h/lb</td><td>0.5 h/lb</td><td>0.42 h/lb</td><td>135°F</td><td>130 to 140°F</td><td>145°F</td><td>25 min</td><td>No</td></tr>
+<tr><td>Beef top round roast</td><td>Beef</td><td>3 to 6 lb</td><td>0.65 h/lb</td><td>0.55 h/lb</td><td>0.45 h/lb</td><td>135°F</td><td>130 to 140°F</td><td>145°F</td><td>20 min</td><td>No</td></tr>
+<tr><td>Oxtail</td><td>Beef</td><td>2 to 4 lb</td><td>1.75 h/lb</td><td>1.5 h/lb</td><td>1.25 h/lb</td><td>205°F</td><td>200 to 210°F</td><td>145°F</td><td>15 min</td><td>Yes</td></tr>
+<tr><td>Ribeye steak, reverse seared</td><td>Beef</td><td>1 to 2 lb</td><td>1 h/rack</td><td>0.85 h/rack</td><td>0.7 h/rack</td><td>125°F</td><td>120 to 130°F</td><td>145°F</td><td>5 min</td><td>No</td></tr>
+<tr><td>Pastrami from corned beef</td><td>Beef</td><td>3 to 5 lb</td><td>1.5 h/lb</td><td>1.25 h/lb</td><td>1.05 h/lb</td><td>203°F</td><td>200 to 205°F</td><td>145°F</td><td>30 min</td><td>Yes</td></tr>
+<tr><td>Country style pork ribs</td><td>Pork</td><td>2 to 4 lb</td><td>4 h/rack</td><td>3.5 h/rack</td><td>3 h/rack</td><td>200°F</td><td>195 to 203°F</td><td>145°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Pork belly burnt ends</td><td>Pork</td><td>3 to 5 lb</td><td>5 h/rack</td><td>4.5 h/rack</td><td>3.75 h/rack</td><td>200°F</td><td>195 to 203°F</td><td>145°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Fresh ham, uncured</td><td>Pork</td><td>10 to 18 lb</td><td>0.8 h/lb</td><td>0.7 h/lb</td><td>0.6 h/lb</td><td>160°F</td><td>150 to 170°F</td><td>145°F</td><td>30 min</td><td>Yes</td></tr>
+<tr><td>Double smoked ham, fully cooked</td><td>Pork</td><td>7 to 12 lb</td><td>0.4 h/lb</td><td>0.35 h/lb</td><td>0.3 h/lb</td><td>165°F</td><td>140 to 165°F</td><td>165°F</td><td>15 min</td><td>No</td></tr>
+<tr><td>Pork chops, thick cut</td><td>Pork</td><td>1 to 2 lb</td><td>1.5 h/rack</td><td>1.25 h/rack</td><td>1 h/rack</td><td>145°F</td><td>145 to 150°F</td><td>145°F</td><td>5 min</td><td>No</td></tr>
+<tr><td>Home cured bacon</td><td>Pork</td><td>3 to 6 lb</td><td>3 h/rack</td><td>2.5 h/rack</td><td>2 h/rack</td><td>150°F</td><td>145 to 155°F</td><td>145°F</td><td>0 min</td><td>No</td></tr>
+<tr><td>Chicken wings</td><td>Poultry</td><td>2 to 5 lb</td><td>2 h/rack</td><td>1.6 h/rack</td><td>1.25 h/rack</td><td>175°F</td><td>170 to 180°F</td><td>165°F</td><td>0 min</td><td>No</td></tr>
+<tr><td>Chicken breast, bone in</td><td>Poultry</td><td>1 to 3 lb</td><td>1.75 h/rack</td><td>1.5 h/rack</td><td>1.2 h/rack</td><td>165°F</td><td>163 to 168°F</td><td>165°F</td><td>5 min</td><td>No</td></tr>
+<tr><td>Spatchcock chicken</td><td>Poultry</td><td>3.5 to 6 lb</td><td>0.6 h/lb</td><td>0.5 h/lb</td><td>0.4 h/lb</td><td>165°F</td><td>165 to 175°F</td><td>165°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Chicken leg quarters</td><td>Poultry</td><td>2 to 4 lb</td><td>2.5 h/rack</td><td>2 h/rack</td><td>1.6 h/rack</td><td>180°F</td><td>175 to 185°F</td><td>165°F</td><td>5 min</td><td>No</td></tr>
+<tr><td>Turkey legs</td><td>Poultry</td><td>1.5 to 4 lb</td><td>3.5 h/rack</td><td>3 h/rack</td><td>2.5 h/rack</td><td>180°F</td><td>175 to 185°F</td><td>165°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Whole duck</td><td>Poultry</td><td>4 to 6 lb</td><td>0.7 h/lb</td><td>0.6 h/lb</td><td>0.5 h/lb</td><td>165°F</td><td>165 to 175°F</td><td>165°F</td><td>15 min</td><td>No</td></tr>
+<tr><td>Cornish game hen</td><td>Poultry</td><td>1 to 2 lb</td><td>2 h/rack</td><td>1.6 h/rack</td><td>1.3 h/rack</td><td>165°F</td><td>165 to 170°F</td><td>165°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Whole trout</td><td>Fish</td><td>0.75 to 2 lb</td><td>1 h/rack</td><td>0.8 h/rack</td><td>0.6 h/rack</td><td>145°F</td><td>140 to 145°F</td><td>145°F</td><td>0 min</td><td>No</td></tr>
+<tr><td>Shrimp, shell on</td><td>Fish</td><td>1 to 3 lb</td><td>0.5 h/rack</td><td>0.4 h/rack</td><td>0.33 h/rack</td><td>145°F</td><td>140 to 145°F</td><td>145°F</td><td>0 min</td><td>No</td></tr>
+<tr><td>Lamb shoulder</td><td>Lamb</td><td>4 to 6 lb</td><td>1.5 h/lb</td><td>1.3 h/lb</td><td>1.1 h/lb</td><td>200°F</td><td>195 to 205°F</td><td>145°F</td><td>30 min</td><td>Yes</td></tr>
+<tr><td>Leg of lamb, bone in</td><td>Lamb</td><td>5 to 8 lb</td><td>0.75 h/lb</td><td>0.65 h/lb</td><td>0.55 h/lb</td><td>140°F</td><td>135 to 145°F</td><td>145°F</td><td>20 min</td><td>No</td></tr>
+<tr><td>Rack of lamb</td><td>Lamb</td><td>1.5 to 2.5 lb</td><td>2 h/rack</td><td>1.75 h/rack</td><td>1.4 h/rack</td><td>140°F</td><td>135 to 145°F</td><td>145°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Venison roast</td><td>Other</td><td>2 to 4 lb</td><td>0.8 h/lb</td><td>0.7 h/lb</td><td>0.6 h/lb</td><td>140°F</td><td>135 to 145°F</td><td>145°F</td><td>15 min</td><td>No</td></tr>
+<tr><td>Smoked meatloaf</td><td>Other</td><td>2 to 3 lb</td><td>3 h/rack</td><td>2.5 h/rack</td><td>2 h/rack</td><td>160°F</td><td>160 to 165°F</td><td>160°F</td><td>10 min</td><td>No</td></tr>
+<tr><td>Smoked macaroni and cheese</td><td>Other</td><td>2 to 4 lb</td><td>2 h/rack</td><td>1.5 h/rack</td><td>1.25 h/rack</td><td>165°F</td><td>160 to 170°F</td><td>165°F</td><td>5 min</td><td>No</td></tr>
+</table>
+
+<h2>Notes</h2>
+<ul>
+<li>Hours per pound is a planning device, not physics. What really sets the clock is thickness — heat travels inward from the surface, so a thick, square 12 lb brisket will beat a long, flat 14 lb one to temperature every time.</li>
+<li>The stall: a plateau, usually between 150°F and 165°F internal, where a large cut stops climbing for two to six hours. Moisture wicks to the surface and evaporates, and evaporation removes heat about as fast as the fire adds it. Wait it out for the firmest bark, wrap in butcher paper (breathes, keeps bark reasonably firm), or wrap in foil (kills the stall hardest, partly steams the bark soft). Most cooks wrap between 160°F and 170°F, or when the bark color is where they want it.</li>
+<li>Work backward from serving time against the slow end: take the slow estimate, add the rest, add a buffer of at least two hours on anything longer than six hours. A cut that finishes early is a solved problem — wrap it, put it in a dry cooler packed with towels, and it holds above 140°F for hours. A cut that finishes late is not solvable.</li>
+<li>Raising the pit 25°F removes about 15 percent of the cook (225°F to 250°F) and about 17 percent more (250°F to 275°F). For most cooks 250°F is the better default; reserve 225°F for when you want the longest smoke exposure and have the hours spare. Use 275°F or higher for poultry so the skin renders instead of turning rubbery.</li>
+<li>Two briskets on one smoker do not take twice as long. Time scales with the thickness of an individual piece, not the total weight on the grate. Add about an hour of buffer for a full cooker.</li>
+<li>Every look costs roughly 15 minutes of recovery on a charcoal or electric cooker. Use a leave-in probe and stop peeking. Probe the thickest part of the muscle, not touching bone and not in a fat seam.</li>
+<li>Keep hot-held meat at or above 140°F from the pit to the plate. Below 140°F, the clock starts — health codes give a cumulative 2 to 4 hours in the danger zone before food must be served or discarded.</li>
+<li>Beef burnt ends hours are the second cook only, after a point has already been smoked and cubed. Budget the full point cook ahead of it.</li>
+<li>Pull temperature is a texture target; the USDA minimum is a safety number. On a brisket they are 58 degrees apart, and the gap represents hours of cooking that exist purely to render collagen. On a whole turkey they are identical, which is why poultry has no equivalent margin for error.</li>
+<li>For the brisket-specific version with sliced/pulled styles, hot-and-fast 300°F, and the serving-size calculator, see the <a href="Brisket%20Smoking%20Calculator.html">Brisket Smoking Calculator</a>.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>Master smoking chart (47 cuts, rates, pull temperatures, USDA minimums, rest times): <a href="https://smokercalc.com/reference/smoking-time-and-temp-chart/">SmokerCalc.com</a>, published August 14, 2026. Same data file as the cook-time calculator at <a href="https://meatsmokingcalculator.com/meats/brisket-smoking-calculator/">MeatSmokingCalculator.com</a>.</li>
+</ul>
+
+<p><a href="../index.html">← Back to all recipes</a></p>
+
+<script>
+var CUTS = [
+{id:"brisket-packer", name:"Beef brisket, whole packer", group:"Beef", mode:"lb", r:{225:90,250:75,275:60}, pull:203, pullRange:"195 to 205°F", usda:145, rest:60, stall:true, typical:"10 to 18 lb"},
+{id:"brisket-flat", name:"Beef brisket flat", group:"Beef", mode:"lb", r:{225:90,250:75,275:63}, pull:203, pullRange:"195 to 205°F", usda:145, rest:45, stall:true, typical:"4 to 8 lb"},
+{id:"brisket-point", name:"Beef brisket point", group:"Beef", mode:"lb", r:{225:90,250:78,275:66}, pull:205, pullRange:"200 to 208°F", usda:145, rest:30, stall:true, typical:"4 to 7 lb"},
+{id:"plate-ribs", name:"Beef short ribs, plate", group:"Beef", mode:"lb", r:{225:90,250:78,275:66}, pull:203, pullRange:"200 to 208°F", usda:145, rest:30, stall:true, typical:"3 to 6 lb"},
+{id:"chuck", name:"Beef chuck roast", group:"Beef", mode:"lb", r:{225:90,250:75,275:63}, pull:205, pullRange:"200 to 210°F", usda:145, rest:30, stall:true, typical:"3 to 5 lb"},
+{id:"cheeks", name:"Beef cheeks", group:"Beef", mode:"lb", r:{225:90,250:78,275:66}, pull:205, pullRange:"200 to 210°F", usda:145, rest:20, stall:true, typical:"2 to 4 lb"},
+{id:"oxtail", name:"Oxtail", group:"Beef", mode:"lb", r:{225:105,250:90,275:75}, pull:205, pullRange:"200 to 210°F", usda:145, rest:15, stall:true, typical:"2 to 4 lb"},
+{id:"pastrami", name:"Pastrami from corned beef", group:"Beef", mode:"lb", r:{225:90,250:75,275:63}, pull:203, pullRange:"200 to 205°F", usda:145, rest:30, stall:true, typical:"3 to 5 lb"},
+{id:"tri-tip", name:"Beef tri-tip", group:"Beef", mode:"lb", r:{225:45,250:39,275:30}, pull:135, pullRange:"130 to 140°F", usda:145, rest:10, stall:false, typical:"2 to 3 lb"},
+{id:"prime-rib", name:"Prime rib, standing rib roast", group:"Beef", mode:"lb", r:{225:36,250:30,275:25.2}, pull:135, pullRange:"130 to 140°F", usda:145, rest:25, stall:false, typical:"5 to 12 lb"},
+{id:"top-round", name:"Beef top round roast", group:"Beef", mode:"lb", r:{225:39,250:33,275:27}, pull:135, pullRange:"130 to 140°F", usda:145, rest:20, stall:false, typical:"3 to 6 lb"},
+{id:"back-ribs", name:"Beef back ribs", group:"Beef", mode:"rack", r:{225:330,250:270,275:225}, pull:203, pullRange:"198 to 205°F", usda:145, rest:20, stall:true, typical:"3 to 5 lb", note:"Much less meat than plate ribs because the butcher already took the ribeye."},
+{id:"burnt-ends", name:"Beef burnt ends", group:"Beef", mode:"rack", r:{225:180,250:150,275:120}, pull:205, pullRange:"200 to 208°F", usda:145, rest:10, stall:false, typical:"3 to 6 lb", note:"Second cook only, after a point has already been smoked and cubed. Budget the full point cook ahead of it."},
+{id:"ribeye", name:"Ribeye steak, reverse seared", group:"Beef", mode:"rack", r:{225:60,250:51,275:42}, pull:125, pullRange:"120 to 130°F", usda:145, rest:5, stall:false, typical:"1 to 2 lb", note:"Pull 20°F to 25°F below your finished target, then sear hot. Searing adds roughly 10°F to 15°F."},
+{id:"pork-butt", name:"Pork shoulder, Boston butt", group:"Pork", mode:"lb", r:{225:105,250:90,275:75}, pull:203, pullRange:"200 to 205°F", usda:145, rest:45, stall:true, typical:"6 to 10 lb"},
+{id:"picnic", name:"Pork picnic shoulder", group:"Pork", mode:"lb", r:{225:105,250:90,275:75}, pull:203, pullRange:"200 to 205°F", usda:145, rest:45, stall:true, typical:"6 to 9 lb"},
+{id:"pork-loin", name:"Pork loin roast", group:"Pork", mode:"lb", r:{225:45,250:36,275:30}, pull:145, pullRange:"145 to 150°F", usda:145, rest:10, stall:false, typical:"3 to 5 lb"},
+{id:"fresh-ham", name:"Fresh ham, uncured", group:"Pork", mode:"lb", r:{225:48,250:42,275:36}, pull:160, pullRange:"150 to 170°F", usda:145, rest:30, stall:true, typical:"10 to 18 lb"},
+{id:"double-ham", name:"Double smoked ham, fully cooked", group:"Pork", mode:"lb", r:{225:24,250:21,275:18}, pull:165, pullRange:"140 to 165°F", usda:165, rest:15, stall:false, typical:"7 to 12 lb"},
+{id:"spare-ribs", name:"Pork spare ribs, St. Louis cut", group:"Pork", mode:"rack", r:{225:360,250:300,275:255}, pull:200, pullRange:"195 to 203°F", usda:145, rest:15, stall:false, typical:"2.5 to 4 lb", note:"Timed per rack, not per pound. The bend test beats any thermometer here: lift with tongs and the rack should crack on the surface."},
+{id:"baby-backs", name:"Pork baby back ribs", group:"Pork", mode:"rack", r:{225:300,250:255,275:210}, pull:198, pullRange:"195 to 200°F", usda:145, rest:10, stall:false, typical:"1.5 to 2.5 lb", note:"Leaner and smaller than spares, so they finish roughly an hour sooner. Overcooking turns them to mush."},
+{id:"tenderloin", name:"Pork tenderloin", group:"Pork", mode:"rack", r:{225:120,250:96,275:75}, pull:145, pullRange:"145 to 150°F", usda:145, rest:5, stall:false, typical:"1 to 1.5 lb", note:"The leanest cut on the pig. Minutes matter here, so probe early."},
+{id:"sausage", name:"Fresh sausage links", group:"Pork", mode:"rack", r:{225:150,250:120,275:96}, pull:160, pullRange:"160 to 165°F", usda:160, rest:5, stall:false, typical:"2 to 5 lb", note:"Ground meat, so the USDA minimum is 160°F and not 145°F."},
+{id:"country-ribs", name:"Country style pork ribs", group:"Pork", mode:"rack", r:{225:240,250:210,275:180}, pull:200, pullRange:"195 to 203°F", usda:145, rest:10, stall:false, typical:"2 to 4 lb", note:"Not ribs at all: strips cut from the shoulder blade end, so they behave like small pork butts and want to go to 200°F rather than 145°F."},
+{id:"belly-ends", name:"Pork belly burnt ends", group:"Pork", mode:"rack", r:{225:300,250:270,275:225}, pull:200, pullRange:"195 to 203°F", usda:145, rest:10, stall:false, typical:"3 to 5 lb", note:"Cubed first, so there is far more surface area than a whole slab. Three hours open, then covered with sauce and butter until the cubes jiggle."},
+{id:"pork-chops", name:"Pork chops, thick cut", group:"Pork", mode:"rack", r:{225:90,250:75,275:60}, pull:145, pullRange:"145 to 150°F", usda:145, rest:5, stall:false, typical:"1 to 2 lb", note:"Buy them at least 1.25 inches thick. Anything thinner cooks through before it takes any smoke at all."},
+{id:"bacon", name:"Home cured bacon", group:"Pork", mode:"rack", r:{225:180,250:150,275:120}, pull:150, pullRange:"145 to 155°F", usda:145, rest:0, stall:false, typical:"3 to 6 lb", note:"Requires a curing salt containing sodium nitrite, used at the exact rate on the packet, then 7 days of refrigerated cure before it ever sees the smoker. Never improvise a cure recipe."},
+{id:"whole-chicken", name:"Whole chicken", group:"Poultry", mode:"lb", r:{225:45,250:36,275:30}, pull:165, pullRange:"165 to 175°F", usda:165, rest:10, stall:false, typical:"3.5 to 6 lb"},
+{id:"spatchcock", name:"Spatchcock chicken", group:"Poultry", mode:"lb", r:{225:36,250:30,275:24}, pull:165, pullRange:"165 to 175°F", usda:165, rest:10, stall:false, typical:"3.5 to 6 lb"},
+{id:"whole-turkey", name:"Whole turkey", group:"Poultry", mode:"lb", r:{225:39,250:33,275:27}, pull:165, pullRange:"165 to 170°F", usda:165, rest:20, stall:false, typical:"10 to 20 lb"},
+{id:"turkey-breast", name:"Turkey breast, bone in", group:"Poultry", mode:"lb", r:{225:36,250:30,275:24}, pull:165, pullRange:"162 to 168°F", usda:165, rest:15, stall:false, typical:"4 to 8 lb"},
+{id:"whole-duck", name:"Whole duck", group:"Poultry", mode:"lb", r:{225:42,250:36,275:30}, pull:165, pullRange:"165 to 175°F", usda:165, rest:15, stall:false, typical:"4 to 6 lb"},
+{id:"thighs", name:"Chicken thighs, bone in", group:"Poultry", mode:"rack", r:{225:135,250:105,275:84}, pull:180, pullRange:"175 to 185°F", usda:165, rest:5, stall:false, typical:"1.5 to 3 lb", note:"Safe at 165°F, but dark meat texture improves up to about 180°F. The extra 15 degrees is preference, the 165°F is not."},
+{id:"wings", name:"Chicken wings", group:"Poultry", mode:"rack", r:{225:120,250:96,275:75}, pull:175, pullRange:"170 to 180°F", usda:165, rest:0, stall:false, typical:"2 to 5 lb", note:"Safe at 165°F, but wings eat better around 175°F to 180°F. Finish at 400°F or higher for 10 minutes if you want skin that snaps."},
+{id:"chicken-breast", name:"Chicken breast, bone in", group:"Poultry", mode:"rack", r:{225:105,250:90,275:72}, pull:165, pullRange:"163 to 168°F", usda:165, rest:5, stall:false, typical:"1 to 3 lb", note:"The least forgiving poultry cut on the smoker. Brine it, probe early, and pull the second it reads 165°F."},
+{id:"quarters", name:"Chicken leg quarters", group:"Poultry", mode:"rack", r:{225:150,250:120,275:96}, pull:180, pullRange:"175 to 185°F", usda:165, rest:5, stall:false, typical:"2 to 4 lb", note:"The cheapest cut in barbecue and the hardest to overcook. Dark meat only improves between 165°F and 185°F."},
+{id:"turkey-legs", name:"Turkey legs", group:"Poultry", mode:"rack", r:{225:210,250:180,275:150}, pull:180, pullRange:"175 to 185°F", usda:165, rest:10, stall:false, typical:"1.5 to 4 lb", note:"The theme-park version is brined in a curing salt, which is what makes it pink and ham-like. Without that cure it tastes like turkey, not like the fair."},
+{id:"cornish", name:"Cornish game hen", group:"Poultry", mode:"rack", r:{225:120,250:96,275:78}, pull:165, pullRange:"165 to 170°F", usda:165, rest:10, stall:false, typical:"1 to 2 lb", note:"One bird per person, which makes these the easiest smoked poultry to plate for a dinner party."},
+{id:"salmon", name:"Salmon fillet", group:"Fish", mode:"rack", r:{225:60,250:48,275:39}, pull:145, pullRange:"125 to 145°F", usda:145, rest:0, stall:false, typical:"1 to 3 lb", note:"USDA safe is 145°F. Many cooks prefer 125°F to 130°F, which is a personal risk decision and not appropriate for anyone pregnant, very young, elderly or immunocompromised."},
+{id:"trout", name:"Whole trout", group:"Fish", mode:"rack", r:{225:60,250:48,275:36}, pull:145, pullRange:"140 to 145°F", usda:145, rest:0, stall:false, typical:"0.75 to 2 lb", note:"A short brine of 30 to 60 minutes firms the flesh so it does not fall through the grate. Alder is the traditional wood."},
+{id:"shrimp", name:"Shrimp, shell on", group:"Fish", mode:"rack", r:{225:30,250:24,275:20}, pull:145, pullRange:"140 to 145°F", usda:145, rest:0, stall:false, typical:"1 to 3 lb", note:"Twenty to thirty minutes, no more. Shrimp go from done to rubber inside five minutes, so this is a set-a-timer cook."},
+{id:"lamb-shoulder", name:"Lamb shoulder", group:"Lamb", mode:"lb", r:{225:90,250:78,275:66}, pull:200, pullRange:"195 to 205°F", usda:145, rest:30, stall:true, typical:"4 to 6 lb"},
+{id:"lamb-leg", name:"Leg of lamb, bone in", group:"Lamb", mode:"lb", r:{225:45,250:39,275:33}, pull:140, pullRange:"135 to 145°F", usda:145, rest:20, stall:false, typical:"5 to 8 lb"},
+{id:"lamb-rack", name:"Rack of lamb", group:"Lamb", mode:"rack", r:{225:120,250:105,275:84}, pull:140, pullRange:"135 to 145°F", usda:145, rest:10, stall:false, typical:"1.5 to 2.5 lb", note:"Small, lean and expensive, which is a bad combination to guess at. Probe from the end, parallel to the bones."},
+{id:"venison", name:"Venison roast", group:"Other", mode:"lb", r:{225:48,250:42,275:36}, pull:140, pullRange:"135 to 145°F", usda:145, rest:15, stall:false, typical:"2 to 4 lb"},
+{id:"meatloaf", name:"Smoked meatloaf", group:"Other", mode:"rack", r:{225:180,250:150,275:120}, pull:160, pullRange:"160 to 165°F", usda:160, rest:10, stall:false, typical:"2 to 3 lb", note:"Ground meat, so 160°F is the safety floor and not a preference. Smoke it on a rack or a pan with drain holes so it is not sitting in grease."},
+{id:"mac-cheese", name:"Smoked macaroni and cheese", group:"Other", mode:"rack", r:{225:120,250:90,275:75}, pull:165, pullRange:"160 to 170°F", usda:165, rest:5, stall:false, typical:"2 to 4 lb", note:"A cooked casserole, so the USDA figure that applies is the 165°F casserole and leftovers number. Assemble it already cooked and use the smoker for smoke and browning only."}
+];
+function fmtDur(min) {
+  min = Math.round(min);
+  if (min < 60) return min + " min";
+  var h = Math.floor(min / 60), m = min % 60;
+  return m ? h + " hr " + m + " min" : h + " hr";
+}
+function fmtTime(d) {
+  return d.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) +
+    " " + d.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+}
+function minutes(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function cutById(id) {
+  for (var i = 0; i < CUTS.length; i++) if (CUTS[i].id === id) return CUTS[i];
+  return CUTS[0];
+}
+var restTouched = false;
+var bufferTouched = false;
+function onCutChange() {
+  var cut = cutById(document.getElementById("cut").value);
+  document.getElementById("amount-lb").style.display = cut.mode === "lb" ? "" : "none";
+  document.getElementById("amount-rack").style.display = cut.mode === "rack" ? "" : "none";
+  if (!restTouched) document.getElementById("rest-min").value = String(cut.rest);
+  update();
+}
+function update() {
+  var cut = cutById(document.getElementById("cut").value);
+  var pit = parseInt(document.querySelector('input[name="pit"]:checked').value, 10);
+  var rate = cut.r[pit];
+  var cookMin, amountText;
+  if (cut.mode === "lb") {
+    var lb = (parseFloat(document.getElementById("lb").value) || 0) +
+             ((parseFloat(document.getElementById("oz").value) || 0) / 16);
+    cookMin = lb * rate;
+    amountText = lb + " lb";
+    if (lb <= 0) {
+      document.getElementById("out-summary").textContent = "—";
+      document.getElementById("out-detail").textContent = "Enter a weight above.";
+      document.getElementById("out-facts").textContent = "";
+      document.getElementById("out-timeline").innerHTML = "";
+      return;
+    }
+  } else {
+    var racks = parseInt(document.getElementById("racks").value, 10) || 1;
+    cookMin = rate;
+    amountText = racks + (racks === 1 ? " rack" : " racks");
+  }
+  var dateVal = document.getElementById("eat-date").value;
+  var timeVal = document.getElementById("eat-time").value || "18:00";
+  var summary = document.getElementById("out-summary");
+  var detail = document.getElementById("out-detail");
+  var facts = document.getElementById("out-facts");
+  var timeline = document.getElementById("out-timeline");
+  if (!dateVal) {
+    summary.textContent = "—";
+    detail.textContent = "Enter an eat date above.";
+    facts.textContent = "";
+    timeline.innerHTML = "";
+    return;
+  }
+  var eat = new Date(dateVal + "T" + timeVal);
+  cookMin = Math.max(Math.round(cookMin), 5);
+  var trimMin = document.getElementById("trim-on").checked ? minutes("trim-min") : 0;
+  var rubMin = document.getElementById("rub-on").checked ? minutes("rub-min") : 0;
+  var counterMin = document.getElementById("counter-on").checked ? minutes("counter-min") : 0;
+  var restMin = document.getElementById("rest-on").checked ? minutes("rest-min") : 0;
+  if (!bufferTouched) {
+    document.getElementById("buffer-min").value = cookMin > 360 ? "120" : "0";
+  }
+  var bufferMin = minutes("buffer-min");
+  var wrapOn = document.getElementById("wrap-on").checked;
+
+  // Plan backward from the eat time: buffer, rest, cook, counter rest, rub, trim.
+  var cookEnd = new Date(eat.getTime() - (bufferMin + restMin) * 60000);
+  var cookStart = new Date(cookEnd.getTime() - cookMin * 60000);
+  var counterStart = new Date(cookStart.getTime() - counterMin * 60000);
+  var rubStart = new Date(counterStart.getTime() - rubMin * 60000);
+  var start = new Date(rubStart.getTime() - trimMin * 60000);
+  var totalMin = (eat.getTime() - start.getTime()) / 60000;
+
+  summary.textContent = cut.name + " · " + amountText + " — START " + fmtTime(start) +
+    " → EAT " + fmtTime(eat);
+  detail.textContent = fmtDur(totalMin) + " total · cook " + fmtDur(cookMin) +
+    " at " + pit + "°F · pull at " + cut.pull + "°F" +
+    (bufferMin ? " · includes " + fmtDur(bufferMin) + " buffer" : "") + ".";
+  facts.textContent = "Pull " + cut.pull + "°F (" + cut.pullRange + ") · USDA minimum " + cut.usda +
+    "°F · rest " + fmtDur(cut.rest) + " · typical weight " + cut.typical +
+    (cut.stall ? " · stall-prone: expect a plateau around 150–165°F." : "") +
+    (cut.note ? " " + cut.note : "");
+
+  var steps = [];
+  if (trimMin) steps.push({t: start, text: "Time to Trim! — " + fmtDur(trimMin) + ". Trim fat cap and silver skin. Keep the meat cold — it trims cleaner."});
+  if (rubMin) steps.push({t: rubStart, text: "Time to Rub! — " + fmtDur(rubMin) + ". Apply your rub and let it set."});
+  steps.push({t: new Date(cookStart.getTime() - 60 * 60000), text: "Start Your Cooker! " + pit + "°F — get the pit up to temp 30–60 minutes before the cook so the smoke runs clean."});
+  if (counterMin) steps.push({t: counterStart, text: "Counter Rest — " + fmtDur(counterMin) + ". Let the meat lose its fridge chill on the counter."});
+  steps.push({t: cookStart, text: "Time to Cook! " + pit + "°F — " + fmtDur(cookMin) + "."});
+  if (wrapOn) steps.push({t: new Date(cookStart.getTime() + Math.round(cookMin * 0.65) * 60000), text: "Wrap mid-cook — about " + Math.round(cookMin * 0.65) + " min into the cook, around 160–170°F, once the bark is set."});
+  steps.push({t: cookEnd, text: "Cooking is Complete! " + cut.pull + "°F — these times are estimates. It is really done when it probes right: tenderness decides, not the clock."});
+  if (restMin) steps.push({t: cookEnd, text: "Start Rest! — " + fmtDur(restMin) + "."});
+  if (bufferMin) steps.push({t: new Date(cookEnd.getTime() + restMin * 60000), text: "Buffer — " + fmtDur(bufferMin) + " of slack. A cut that finishes early holds in a dry cooler packed with towels, above 140°F."});
+  steps.push({t: eat, text: "Time to EAT!"});
+  steps.sort(function(a, b) { return a.t - b.t; });
+  timeline.innerHTML = "";
+  steps.forEach(function(s) {
+    var li = document.createElement("li");
+    li.textContent = fmtTime(s.t) + " — " + s.text;
+    timeline.appendChild(li);
+  });
+}
+// Build the cut dropdown, grouped.
+(function() {
+  var sel = document.getElementById("cut");
+  var groups = {};
+  var order = ["Beef", "Pork", "Poultry", "Fish", "Lamb", "Other"];
+  CUTS.forEach(function(c) {
+    if (!groups[c.group]) groups[c.group] = [];
+    groups[c.group].push(c);
+  });
+  order.forEach(function(g) {
+    if (!groups[g]) return;
+    var og = document.createElement("optgroup");
+    og.label = g;
+    groups[g].forEach(function(c) {
+      var o = document.createElement("option");
+      o.value = c.id;
+      o.textContent = c.name;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+  sel.value = "brisket-packer";
+  var d = new Date();
+  d.setDate(d.getDate() + 1);
+  document.getElementById("eat-date").value =
+    d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+})();
+["cut"].forEach(function(id) {
+  document.getElementById(id).addEventListener("change", onCutChange);
+});
+["lb", "oz", "racks", "eat-date", "eat-time", "trim-min", "rub-min", "counter-min", "wrap-on", "rest-min", "buffer-min"].forEach(function(id) {
+  document.getElementById(id).addEventListener("input", update);
+  document.getElementById(id).addEventListener("change", update);
+});
+["trim-on", "rub-on", "counter-on", "rest-on"].forEach(function(id) {
+  document.getElementById(id).addEventListener("change", update);
+});
+document.querySelectorAll('input[name="pit"]').forEach(function(el) {
+  el.addEventListener("change", update);
+});
+document.getElementById("rest-min").addEventListener("change", function() { restTouched = true; });
+document.getElementById("buffer-min").addEventListener("change", function() { bufferTouched = true; });
+update();
+</script>
+</body>
+</html>
